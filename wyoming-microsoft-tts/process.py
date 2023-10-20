@@ -8,7 +8,7 @@ import time
 from dataclasses import dataclass
 from typing import Any, Dict, Optional
 
-from download import ensure_voice_exists, find_voice
+from download import find_voice
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -109,13 +109,6 @@ class MicrosoftProcessManager:
                 voice_name,
                 len(self.processes) + 1,
                 self.args.max_microsoft_procs,
-            )
-
-            ensure_voice_exists(
-                voice_name,
-                self.args.data_dir,
-                self.args.download_dir,
-                self.voices_info,
             )
 
             onnx_path, config_path = find_voice(voice_name, self.args.data_dir)
