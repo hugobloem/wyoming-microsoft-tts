@@ -8,7 +8,7 @@ import time
 from dataclasses import dataclass
 from typing import Any, Dict, Optional
 
-from .download import ensure_voice_exists, find_voice
+from download import ensure_voice_exists, find_voice
 
 _LOGGER = logging.getLogger(__name__)
 

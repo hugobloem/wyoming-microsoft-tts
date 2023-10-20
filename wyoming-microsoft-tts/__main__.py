@@ -10,9 +10,9 @@ from typing import Any, Dict, Set
 from wyoming.info import Attribution, Info, TtsProgram, TtsVoice
 from wyoming.server import AsyncServer
 
-from .download import find_voice, get_voices
-from .handler import MicrosoftEventHandler
-from .process import MicrosoftProcessManager
+from download import find_voice, get_voices
+from handler import MicrosoftEventHandler
+from process import MicrosoftProcessManager
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -24,6 +24,16 @@ async def main() -> None:
         "--microsoft",
         required=True,
         help="Path to microsoft executable",
+    )
+    parser.add_argument(
+        "--service-region",
+        required=True,
+        help="Microsoft Azure region (e.g., westus2)",
+    )
+    parser.add_argument(
+        "--subscription-key",
+        required=True,
+        help="Microsoft Azure subscription key",
     )
     parser.add_argument(
         "--voice",
@@ -76,7 +86,7 @@ async def main() -> None:
     logging.basicConfig(level=logging.DEBUG if args.debug else logging.INFO)
 
     # Load voice info
-    voices_info = get_voices(args.download_dir, update_voices=args.update_voices)
+    voices_info = get_voices(args.download_dir, update_voices=args.update_voices, region=args.service_region, key=args.subscription_key)
 
     # Resolve aliases for backwards compatibility with old voice names
     aliases_info: Dict[str, Any] = {}

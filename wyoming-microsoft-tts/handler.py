@@ -13,7 +13,7 @@ from wyoming.info import Describe, Info
 from wyoming.server import AsyncEventHandler
 from wyoming.tts import Synthesize
 
-from .process import MicrosoftProcessManager
+from process import MicrosoftProcessManager
 
 _LOGGER = logging.getLogger(__name__)
 
