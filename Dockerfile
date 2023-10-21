@@ -1,7 +1,6 @@
-FROM debian:bullseye-slim
-
-ARG TARGETARCH
-ARG TARGETVARIANT
+ARG BUILD_FROM
+FROM ${BUILD_FROM}
+ARG BUILD_ARCH
 
 # Install Piper
 WORKDIR /usr/src
