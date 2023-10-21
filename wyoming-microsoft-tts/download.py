@@ -94,24 +94,14 @@ def get_voices(
         return json.load(voices_file)
 
 
-def find_voice(name: str, data_dirs: Iterable[Union[str, Path]]) -> Tuple[Path, Path]:
+def find_voice(name: str, download_dir: Union[str, Path]) -> Dict[str, Any]:
     """Looks for the files for a voice.
 
-    Returns: tuple of onnx path, config path
+    Returns: Dict of voice info
     """
-    for data_dir in data_dirs:
-        data_dir = Path(data_dir)
-        onnx_path = data_dir / f"{name}.onnx"
-        config_path = data_dir / f"{name}.onnx.json"
-
-        if onnx_path.exists() and config_path.exists():
-            return onnx_path, config_path
-
-    # Try as a custom voice
-    onnx_path = Path(name)
-    config_path = Path(name + ".json")
-
-    if onnx_path.exists() and config_path.exists():
-        return onnx_path, config_path
-
+    voices = get_voices(download_dir)
+    if name in voices:
+        # Already installed
+        return voices[name]
+    
     raise VoiceNotFoundError(name)

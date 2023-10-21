@@ -55,9 +55,6 @@ async def main() -> None:
     parser.add_argument(
         "--speaker", type=str, help="Name or id of speaker for default voice"
     )
-    parser.add_argument("--noise-scale", type=float, help="Generator noise")
-    parser.add_argument("--length-scale", type=float, help="Phoneme length")
-    parser.add_argument("--noise-w", type=float, help="Phoneme width noise")
     #
     parser.add_argument(
         "--auto-punctuation", default=".?!", help="Automatically add punctuation"

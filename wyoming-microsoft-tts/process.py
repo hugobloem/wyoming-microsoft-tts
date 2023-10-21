@@ -111,35 +111,30 @@ class MicrosoftProcessManager:
                 self.args.max_microsoft_procs,
             )
 
-            onnx_path, config_path = find_voice(voice_name, self.args.data_dir)
-            with open(config_path, "r", encoding="utf-8") as config_file:
-                config = json.load(config_file)
+            config = find_voice(voice_name, self.args.download_dir)
 
             wav_dir = tempfile.TemporaryDirectory()
             microsoft_args = [
-                "--model",
-                str(onnx_path),
-                "--config",
-                str(config_path),
+                "--voice",
+                str(config["key"]),
                 "--output_dir",
                 str(wav_dir.name),
-                "--json-input",  # microsoft 1.1+
+                "--json-input",
+                "--service-region",
+                str(self.args.service_region),
+                "--subscription-key",
+                str(self.args.subscription_key),
             ]
+
+            if self.args.debug:
+                print('Debugging Microsoft')
+                microsoft_args.append("--debug")
 
             if voice_speaker is not None:
                 if _is_multispeaker(config):
                     speaker_id = _get_speaker_id(config, voice_speaker)
                     if speaker_id is not None:
                         microsoft_args.extend(["--speaker", str(speaker_id)])
-
-            if self.args.noise_scale:
-                microsoft_args.extend(["--noise-scale", str(self.args.noise_scale)])
-
-            if self.args.length_scale:
-                microsoft_args.extend(["--length-scale", str(self.args.length_scale)])
-
-            if self.args.noise_w:
-                microsoft_args.extend(["--noise-w", str(self.args.noise_w)])
 
             _LOGGER.debug(
                 "Starting microsoft process: %s args=%s", self.args.microsoft, microsoft_args

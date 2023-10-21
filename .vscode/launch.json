@@ -1,0 +1,40 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug __main__",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/wyoming-microsoft-tts/__main__.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}",
+            },
+            "args": [
+                "--microsoft", "./microsoft_tts.py",
+                "--voice", "en-GB-SoniaNeural",
+                "--data-dir", "./temp/",
+                "--service-region", "uksouth", 
+                // "--update-voices",
+                "--debug",
+                "--uri", "tcp://localhost:10200"
+            ]
+        },
+        {
+            "name": "Debug microsoft_tts.py",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/microsoft_tts.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}",
+            },
+            "args": [
+                "--voice", "en-GB-SoniaNeural",
+                "--service-region", "uksouth", 
+                "--output-dir", "./temp/",
+                "--debug"
+            ]
+        }
+    ]
+}
