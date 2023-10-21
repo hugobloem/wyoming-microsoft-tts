@@ -5,18 +5,25 @@ ARG BUILD_ARCH
 # Install Piper
 WORKDIR /usr/src
 
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+
 COPY requirements.txt ./
 
 RUN \
-    apt-get update \
+    apt-get update \ 
     && apt-get install -y --no-install-recommends \
-        # curl \
+        curl \
         python3 \
-        python3-pip \
-    \
-    && pip3 install --no-cache-dir \
-        -r requirements.txt \
-    \
+        python3-pip 
+RUN \
+    pip3 install --no-cache-dir -U \
+        setuptools \
+        wheel 
+RUN \
+    pip3 install --no-cache-dir \
+        -r requirements.txt
+RUN \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /
