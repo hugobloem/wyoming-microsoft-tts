@@ -13,11 +13,10 @@
             "args": [
                 "--microsoft", "./microsoft_tts.py",
                 "--voice", "en-GB-SoniaNeural",
-                "--data-dir", "./temp/",
+                "--download-dir", "./temp/",
                 "--service-region", "uksouth", 
-                // "--update-voices",
                 "--debug",
-                "--uri", "tcp://localhost:10200"
+                "--uri", "tcp://0.0.0.0:10200"
             ]
         },
         {

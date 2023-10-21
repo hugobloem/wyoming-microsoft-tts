@@ -13,7 +13,7 @@ from wyoming.info import Describe, Info
 from wyoming.server import AsyncEventHandler
 from wyoming.tts import Synthesize
 
-from process import MicrosoftProcessManager
+from microsoft_tts import MicrosoftTTS
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -23,7 +23,6 @@ class MicrosoftEventHandler(AsyncEventHandler):
         self,
         wyoming_info: Info,
         cli_args: argparse.Namespace,
-        process_manager: MicrosoftProcessManager,
         *args,
         **kwargs,
     ) -> None:
@@ -31,7 +30,7 @@ class MicrosoftEventHandler(AsyncEventHandler):
 
         self.cli_args = cli_args
         self.wyoming_info_event = wyoming_info.event()
-        self.process_manager = process_manager
+        self.microsoft_tts = MicrosoftTTS(cli_args)
 
     async def handle_event(self, event: Event) -> bool:
         if Describe.is_type(event.type):
@@ -62,38 +61,7 @@ class MicrosoftEventHandler(AsyncEventHandler):
             if not has_punctuation:
                 text = text + self.cli_args.auto_punctuation[0]
 
-        async with self.process_manager.processes_lock:
-            _LOGGER.debug("synthesize: raw_text=%s, text='%s'", raw_text, text)
-            voice_name: Optional[str] = None
-            voice_speaker: Optional[str] = None
-            if synthesize.voice is not None:
-                voice_name = synthesize.voice.name
-                voice_speaker = synthesize.voice.speaker
-
-            microsoft_proc = await self.process_manager.get_process(voice_name=voice_name)
-
-            assert microsoft_proc.proc.stdin is not None
-            assert microsoft_proc.proc.stdout is not None
-
-            # JSON in, file path out
-            input_obj: Dict[str, Any] = {"text": text}
-            if voice_speaker is not None:
-                speaker_id = microsoft_proc.get_speaker_id(voice_speaker)
-                if speaker_id is not None:
-                    input_obj["speaker_id"] = speaker_id
-                else:
-                    _LOGGER.warning(
-                        "No speaker '%s' for voice '%s'", voice_speaker, voice_name
-                    )
-
-            _LOGGER.debug("input: %s", input_obj)
-            microsoft_proc.proc.stdin.write(
-                (json.dumps(input_obj, ensure_ascii=False) + "\n").encode()
-            )
-            await microsoft_proc.proc.stdin.drain()
-
-            output_path = (await microsoft_proc.proc.stdout.readline()).decode().strip()
-            _LOGGER.debug(output_path)
+        output_path = self.microsoft_tts.synthesize(text=synthesize.text, voice=synthesize.voice.name)
 
         wav_file: wave.Wave_read = wave.open(output_path, "rb")
         with wav_file:
