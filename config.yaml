@@ -1,3 +1,4 @@
+---
 name: "Microsoft TTS"
 description: "Text to speech using Microsoft Azure"
 version: "1.0.0"
@@ -9,3 +10,7 @@ arch:
   - armhf
   - armv7
   - i386
+discovery:
+  - wyoming
+ports:
+  "10200/tcp": null
