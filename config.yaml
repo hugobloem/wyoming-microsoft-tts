@@ -11,6 +11,9 @@ discovery:
   - wyoming
 ports:
   "10200/tcp": null
+options:
+  debug_logging: false
+  update_voices: true
 schema:
   subscription_key: str
   service_region: str
