@@ -31,8 +31,8 @@ async def main() -> None:
     )
     parser.add_argument(
         "--voice",
-        required=True,
-        help="Default Microsoft voice to use (e.g., en_US-lessac-medium)",
+        default="en-GB-SoniaNeural",
+        help="Default Microsoft voice to use (e.g., en-GB-SoniaNeural)",
     )
     parser.add_argument("--download-dir", default="./", type=str)
     parser.add_argument("--uri", default="stdio://", help="unix:// or tcp://")

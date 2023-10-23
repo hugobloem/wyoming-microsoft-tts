@@ -14,3 +14,7 @@ discovery:
   - wyoming
 ports:
   "10200/tcp": null
+schema:
+  subscription_key: str
+  service_region: str
+
