@@ -7,9 +7,6 @@ init: false
 arch:
   - aarch64
   - amd64
-  - armhf
-  - armv7
-  - i386
 discovery:
   - wyoming
 ports:
@@ -17,4 +14,6 @@ ports:
 schema:
   subscription_key: str
   service_region: str
+  debug_logging: bool
+  update_voices: bool
 

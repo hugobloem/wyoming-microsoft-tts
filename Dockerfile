@@ -25,10 +25,15 @@ RUN apt-get update \
 
 # Copy files
 WORKDIR /
+COPY rootfs /
 ADD wyoming-microsoft-tts ./
-COPY run.sh /
-RUN chmod 770 /run.sh
+# COPY run.sh /
+# RUN chmod 770 /run.sh
 
-EXPOSE 10200
+# EXPOSE 10200
 
-CMD ["/run.sh"]
+HEALTHCHECK --start-period=10m \
+    CMD echo '{ "type": "describe" }' \
+        | nc -w 1 localhost 10200 \
+        | grep -q "microsoft" \
+        || exit 1
