@@ -9,7 +9,7 @@ from urllib.parse import quote, urlsplit, urlunsplit
 from urllib.request import urlopen, Request
 from pycountry import countries
 
-from file_hash import get_file_hash
+from .file_hash import get_file_hash
 
 URL_FORMAT = "https://{region}.tts.speech.microsoft.com/cognitiveservices/voices/list"
 URL_HEADER = "Ocp-Apim-Subscription-Key"

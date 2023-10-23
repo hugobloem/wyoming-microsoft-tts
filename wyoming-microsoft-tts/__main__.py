@@ -10,8 +10,8 @@ from typing import Any, Dict, Set
 from wyoming.info import Attribution, Info, TtsProgram, TtsVoice
 from wyoming.server import AsyncServer
 
-from download import find_voice, get_voices
-from handler import MicrosoftEventHandler
+from .download import find_voice, get_voices
+from .handler import MicrosoftEventHandler
 
 _LOGGER = logging.getLogger(__name__)
 

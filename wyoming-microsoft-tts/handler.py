@@ -13,7 +13,7 @@ from wyoming.info import Describe, Info
 from wyoming.server import AsyncEventHandler
 from wyoming.tts import Synthesize
 
-from microsoft_tts import MicrosoftTTS
+from .microsoft_tts import MicrosoftTTS
 
 _LOGGER = logging.getLogger(__name__)
 

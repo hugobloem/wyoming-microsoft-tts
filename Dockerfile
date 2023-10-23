@@ -9,7 +9,10 @@ WORKDIR /usr/src
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 
-COPY requirements.txt ./
+# COPY requirements.txt ./
+COPY setup.py ./pkg/
+COPY requirements.txt ./pkg/
+ADD ./wyoming-microsoft-tts ./pkg/wyoming-microsoft-tts
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
@@ -20,7 +23,8 @@ RUN apt-get update \
     && pip install --no-cache-dir \
         setuptools \
         wheel \
-    && pip install --no-cache-dir -r requirements.txt \
+    && pip install ./pkg \
+#     && pip install --no-cache-dir -r requirements.txt \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy files
