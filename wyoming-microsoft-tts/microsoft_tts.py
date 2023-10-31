@@ -8,6 +8,7 @@ _LOGGER = logging.getLogger(__name__)
 
 class MicrosoftTTS:
     def __init__(self, args) -> None:
+        _LOGGER.debug("Initialize Microsoft TTS")
         self.args = args
         self.speech_config = speechsdk.SpeechConfig(subscription=args.subscription_key, region=args.service_region)
 
@@ -17,6 +18,7 @@ class MicrosoftTTS:
         self.output_dir = output_dir
 
     def synthesize(self, text, voice=None):
+        _LOGGER.debug("Requested TTS for [{}]".format(text))
         if voice is None:
             voice = self.args.voice
 
