@@ -1,1 +1,1 @@
-"""Wyoming server for Microsoft TTS"""
+"""Wyoming server for Microsoft TTS."""

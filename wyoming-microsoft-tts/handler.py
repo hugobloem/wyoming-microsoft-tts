@@ -1,11 +1,9 @@
 """Event handler for clients of the server."""
 import argparse
-import json
 import logging
 import math
 import os
 import wave
-from typing import Any, Dict, Optional
 
 from wyoming.audio import AudioChunk, AudioStart, AudioStop
 from wyoming.event import Event
@@ -19,6 +17,8 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class MicrosoftEventHandler(AsyncEventHandler):
+    """Event handler for clients of the server."""
+
     def __init__(
         self,
         wyoming_info: Info,
@@ -26,6 +26,7 @@ class MicrosoftEventHandler(AsyncEventHandler):
         *args,
         **kwargs,
     ) -> None:
+        """Initialize."""
         super().__init__(*args, **kwargs)
 
         self.cli_args = cli_args
@@ -33,6 +34,7 @@ class MicrosoftEventHandler(AsyncEventHandler):
         self.microsoft_tts = MicrosoftTTS(cli_args)
 
     async def handle_event(self, event: Event) -> bool:
+        """Handle an event."""
         if Describe.is_type(event.type):
             await self.write_event(self.wyoming_info_event)
             _LOGGER.debug("Sent info")
@@ -61,7 +63,9 @@ class MicrosoftEventHandler(AsyncEventHandler):
             if not has_punctuation:
                 text = text + self.cli_args.auto_punctuation[0]
 
-        output_path = self.microsoft_tts.synthesize(text=synthesize.text, voice=synthesize.voice.name)
+        output_path = self.microsoft_tts.synthesize(
+            text=synthesize.text, voice=synthesize.voice.name
+        )
 
         wav_file: wave.Wave_read = wave.open(output_path, "rb")
         with wav_file:

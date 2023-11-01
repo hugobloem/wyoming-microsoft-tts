@@ -1,23 +1,21 @@
-#!/usr/bin/env python3
-import argparse
+import argparse  # noqa: D100
 import asyncio
-import json
+import contextlib
 import logging
 from functools import partial
-from pathlib import Path
-from typing import Any, Dict, Set
+from typing import Any
 
 from wyoming.info import Attribution, Info, TtsProgram, TtsVoice
 from wyoming.server import AsyncServer
 
-from .download import find_voice, get_voices
+from .download import get_voices
 from .handler import MicrosoftEventHandler
 
 _LOGGER = logging.getLogger(__name__)
 
 
 async def main() -> None:
-    """Main entry point."""
+    """Start Wyoming Microsoft TTS server."""
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--service-region",
@@ -66,7 +64,7 @@ async def main() -> None:
     )
 
     # Resolve aliases for backwards compatibility with old voice names
-    aliases_info: Dict[str, Any] = {}
+    aliases_info: dict[str, Any] = {}
     for voice_info in voices_info.values():
         for voice_alias in voice_info.get("aliases", []):
             aliases_info[voice_alias] = {"_is_alias": True, **voice_info}
@@ -100,40 +98,6 @@ async def main() -> None:
         if not voice_info.get("_is_alias", False)
     ]
 
-    # custom_voice_names: Set[str] = set()
-    # if args.voice not in voices_info:
-    #     custom_voice_names.add(args.voice)
-
-    # for custom_voice_name in custom_voice_names:
-    #     # Add custom voice info
-    #     custom_voice_path, custom_config_path = find_voice(
-    #         custom_voice_name, args.data_dir
-    #     )
-    #     with open(custom_config_path, "r", encoding="utf-8") as custom_config_file:
-    #         custom_config = json.load(custom_config_file)
-    #         custom_name = custom_config.get("dataset", custom_voice_path.stem)
-    #         custom_quality = custom_config.get("audio", {}).get("quality")
-    #         if custom_quality:
-    #             description = f"{custom_name} ({custom_quality})"
-    #         else:
-    #             description = custom_name
-
-    #         lang_code = custom_config.get("language", {}).get("code")
-    #         if not lang_code:
-    #             lang_code = custom_config.get("espeak", {}).get("voice")
-    #             if not lang_code:
-    #                 lang_code = custom_voice_path.stem.split("_")[0]
-
-    #         voices.append(
-    #             TtsVoice(
-    #                 name=custom_name,
-    #                 description=description,
-    #                 attribution=Attribution(name="", url=""),
-    #                 installed=True,
-    #                 languages=[lang_code],
-    #             )
-    #         )
-
     wyoming_info = Info(
         tts=[
             TtsProgram(
@@ -165,7 +129,7 @@ async def main() -> None:
 # -----------------------------------------------------------------------------
 
 
-def get_description(voice_info: Dict[str, Any]):
+def get_description(voice_info: dict[str, Any]):
     """Get a human readable description for a voice."""
     name = voice_info["name"]
     name = " ".join(name.split("_"))
@@ -177,7 +141,5 @@ def get_description(voice_info: Dict[str, Any]):
 # -----------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    try:
+    with contextlib.suppress(KeyboardInterrupt):
         asyncio.run(main())
-    except KeyboardInterrupt:
-        pass
