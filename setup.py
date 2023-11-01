@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+"""Setup file for wyoming-microsoft-tts."""
 from pathlib import Path
 
 import setuptools
@@ -10,7 +10,7 @@ module_dir = this_dir / "wyoming_piper"
 requirements = []
 requirements_path = this_dir / "requirements.txt"
 if requirements_path.is_file():
-    with open(requirements_path, "r", encoding="utf-8") as requirements_file:
+    with open(requirements_path, encoding="utf-8") as requirements_file:
         requirements = requirements_file.read().splitlines()
 
 data_files = [module_dir / "voices.json"]

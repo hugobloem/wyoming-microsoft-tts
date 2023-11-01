@@ -1,15 +1,12 @@
 """Utility for downloading Microsoft voices."""
 import json
 import logging
-import shutil
 from pathlib import Path
-from typing import Any, Dict, Iterable, Set, Tuple, Union
-from urllib.error import URLError
+from typing import Any
 from urllib.parse import quote, urlsplit, urlunsplit
-from urllib.request import urlopen, Request
-from pycountry import countries
+from urllib.request import Request, urlopen
 
-from .file_hash import get_file_hash
+from pycountry import countries
 
 URL_FORMAT = "https://{region}.tts.speech.microsoft.com/cognitiveservices/voices/list"
 URL_HEADER = "Ocp-Apim-Subscription-Key"
@@ -22,6 +19,8 @@ _SKIP_FILES = {"MODEL_CARD"}
 
 
 class VoiceNotFoundError(Exception):
+    """Raised when a voice is not found."""
+
     pass
 
 
@@ -33,7 +32,7 @@ def _quote_url(url: str) -> str:
 
 
 def transform_voices_files(response):
-    """Transforms the voices.json file from the Microsoft API to the format used by Piper."""
+    """Transform the voices.json file from the Microsoft API to the format used by Piper."""
     json_response = json.load(response)
     voices = {}
     for entry in json_response:
@@ -52,16 +51,18 @@ def transform_voices_files(response):
             "quality": entry["VoiceType"],
             "num_speakers": 1,
             "speaker_id_map": {},
-            "aliases": []   
+            "aliases": [],
         }
     return voices
-    
 
 
 def get_voices(
-    download_dir: Union[str, Path], update_voices: bool = False, region: str = "westus", key: str = ""
-) -> Dict[str, Any]:
-    """Loads available voices from downloaded or embedded JSON file."""
+    download_dir: str | Path,
+    update_voices: bool = False,
+    region: str = "westus",
+    key: str = "",
+) -> dict[str, Any]:
+    """Load available voices from downloaded or embedded JSON file."""
     download_dir = Path(download_dir)
     voices_download = download_dir / "voices.json"
 
@@ -72,9 +73,8 @@ def get_voices(
             voices_hdr = {URL_HEADER: key}
             _LOGGER.debug("Downloading %s to %s", voices_url, voices_download)
             req = Request(_quote_url(voices_url), headers=voices_hdr)
-            with urlopen(req) as response:
-                with open(voices_download, "w") as download_file:
-                    json.dump(transform_voices_files(response), download_file, indent=4)
+            with urlopen(req) as response, open(voices_download, "w") as download_file:
+                json.dump(transform_voices_files(response), download_file, indent=4)
         except Exception:
             _LOGGER.exception("Failed to update voices list")
 
@@ -82,7 +82,7 @@ def get_voices(
     if voices_download.exists():
         try:
             _LOGGER.debug("Loading %s", voices_download)
-            with open(voices_download, "r", encoding="utf-8") as voices_file:
+            with open(voices_download, encoding="utf-8") as voices_file:
                 return json.load(voices_file)
         except Exception:
             _LOGGER.exception("Failed to load %s", voices_download)
@@ -90,12 +90,12 @@ def get_voices(
     # Fall back to embedded
     voices_embedded = _DIR / "voices.json"
     _LOGGER.debug("Loading %s", voices_embedded)
-    with open(voices_embedded, "r", encoding="utf-8") as voices_file:
+    with open(voices_embedded, encoding="utf-8") as voices_file:
         return json.load(voices_file)
 
 
-def find_voice(name: str, download_dir: Union[str, Path]) -> Dict[str, Any]:
-    """Looks for the files for a voice.
+def find_voice(name: str, download_dir: str | Path) -> dict[str, Any]:
+    """Look for the files for a voice.
 
     Returns: Dict of voice info
     """
@@ -103,5 +103,5 @@ def find_voice(name: str, download_dir: Union[str, Path]) -> Dict[str, Any]:
     if name in voices:
         # Already installed
         return voices[name]
-    
+
     raise VoiceNotFoundError(name)
