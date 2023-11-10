@@ -38,7 +38,9 @@ async def main() -> None:
         type=str,
         help="Directory to download voices.json into (default: /tmp/)",
     )
-    parser.add_argument("--uri", default="stdio://", help="unix:// or tcp://")
+    parser.add_argument(
+        "--uri", default="tcp://0.0.0.0:10200", help="unix:// or tcp://"
+    )
     #
     parser.add_argument(
         "--speaker", type=str, help="Name or id of speaker for default voice"
