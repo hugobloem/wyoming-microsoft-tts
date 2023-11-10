@@ -32,8 +32,15 @@ async def main() -> None:
         default="en-GB-SoniaNeural",
         help="Default Microsoft voice to use (e.g., en-GB-SoniaNeural)",
     )
-    parser.add_argument("--download-dir", default="./", type=str)
-    parser.add_argument("--uri", default="stdio://", help="unix:// or tcp://")
+    parser.add_argument(
+        "--download-dir",
+        default="/tmp/",
+        type=str,
+        help="Directory to download voices.json into (default: /tmp/)",
+    )
+    parser.add_argument(
+        "--uri", default="tcp://0.0.0.0:10200", help="unix:// or tcp://"
+    )
     #
     parser.add_argument(
         "--speaker", type=str, help="Name or id of speaker for default voice"
