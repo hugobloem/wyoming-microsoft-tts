@@ -10,6 +10,7 @@ from wyoming.server import AsyncServer
 
 from .download import get_voices
 from .handler import MicrosoftEventHandler
+from .version import __version__
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -86,6 +87,7 @@ async def main() -> None:
                 url="https://github.com/hugobloem/wyoming-microsoft-tts",
             ),
             installed=True,
+            version=__version__,
             languages=[
                 voice_info.get("language", {}).get(
                     "code",
@@ -115,6 +117,7 @@ async def main() -> None:
                     url="https://github.com/hugobloem/wyoming-microsoft-tts",
                 ),
                 installed=True,
+                version=__version__,
                 voices=sorted(voices, key=lambda v: v.name),
             )
         ],

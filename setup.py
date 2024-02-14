@@ -1,11 +1,13 @@
 """Setup file for wyoming-microsoft-tts."""
+
 from pathlib import Path
 
 import setuptools
 from setuptools import setup
+from .wyoming_microsoft_tts.version import __version__
 
 this_dir = Path(__file__).parent
-module_dir = this_dir / "wyoming_piper"
+module_dir = this_dir / "wyoming_microsoft_tts"
 
 requirements = []
 requirements_path = this_dir / "requirements.txt"
@@ -18,8 +20,8 @@ data_files = [module_dir / "voices.json"]
 # -----------------------------------------------------------------------------
 
 setup(
-    name="wyoming-microsoft-tts",
-    version="1.0.4",
+    name="wyoming_microsoft_tts",
+    version=__version__,
     description="Wyoming Server for Microsoft TTS",
     url="https://github.com/hugobloem/wyoming-microsoft-tts",
     author="Hugo Bloem",
@@ -27,7 +29,7 @@ setup(
     license="MIT",
     packages=setuptools.find_packages(),
     package_data={
-        "wyoming-microsoft-tts": [str(p.relative_to(module_dir)) for p in data_files]
+        "wyoming_microsoft_tts": [str(p.relative_to(module_dir)) for p in data_files]
     },
     install_requires=requirements,
     classifiers=[
