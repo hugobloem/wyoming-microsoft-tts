@@ -4,7 +4,6 @@ from pathlib import Path
 
 import setuptools
 from setuptools import setup
-from .wyoming_microsoft_tts.version import __version__
 
 this_dir = Path(__file__).parent
 module_dir = this_dir / "wyoming_microsoft_tts"
@@ -21,7 +20,7 @@ data_files = [module_dir / "voices.json"]
 
 setup(
     name="wyoming_microsoft_tts",
-    version=__version__,
+    version="1.0.5,
     description="Wyoming Server for Microsoft TTS",
     url="https://github.com/hugobloem/wyoming-microsoft-tts",
     author="Hugo Bloem",
