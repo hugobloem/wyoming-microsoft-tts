@@ -1,5 +1,5 @@
 wyoming==1.5.3
-azure-cognitiveservices-speech==1.35.0
+azure-cognitiveservices-speech==1.36.0
 black==24.2.0
 lxml==5.1.0
 pycountry==23.12.11
