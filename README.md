@@ -33,7 +33,7 @@ Depending on your use case there are different installation options.
 - **Docker container**
   To run as a Docker container use the following command:
   ```bash
-  docker run ghcr.io/hugobloem/wyoming-microsoft-stt-noha:latest --<key> <value>
+  docker run ghcr.io/hugobloem/wyoming-microsoft-tts-noha:latest --<key> <value>
   ```
   For the relevant keys please look at [the table below](#usage)
 
