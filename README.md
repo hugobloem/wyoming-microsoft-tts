@@ -49,7 +49,7 @@ python -m wyoming-microsoft-tts --<key> <value>
 |---|---|---|
 | `service-region` | No | Azure service region e.g., `uksouth` |
 | `subscription-key` | No | Azure subscription key |
-| `uri` | No | Uri where the server will be broadcasted e.g., `tcp://0.0.0.0:10300` |
+| `uri` | No | Uri where the server will be broadcasted e.g., `tcp://0.0.0.0:10200` |
 | `download-dir` | Yes | Directory to download voices.json into (default: /tmp/) |
 | `voice` | Yes | Default voice to set for transcription, default: `en-GB-SoniaNeural` |
 | `auto-punctuation` | Yes | Automatically add punctuation (default: `".?!"`) |
