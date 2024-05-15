@@ -3,25 +3,26 @@
     "configurations": [
         {
             "name": "Debug __main__",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}/wyoming-microsoft-tts/__main__.py",
+            "program": "${workspaceFolder}/wyoming_microsoft_tts/__main__.py",
             "console": "integratedTerminal",
             "env": {
                 "PYTHONPATH": "${workspaceFolder}",
             },
             "args": [
-                "--microsoft", "./microsoft_tts.py",
+                // "--microsoft", "./microsoft_tts.py",
                 "--voice", "en-GB-SoniaNeural",
                 "--download-dir", "./temp/",
                 "--service-region", "uksouth", 
                 "--debug",
-                "--uri", "tcp://0.0.0.0:10200"
+                "--uri", "tcp://0.0.0.0:10200",
+                "--update-voices"
             ]
         },
         {
             "name": "Debug microsoft_tts.py",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/microsoft_tts.py",
             "console": "integratedTerminal",
