@@ -20,7 +20,7 @@ data_files = [module_dir / "voices.json"]
 
 setup(
     name="wyoming_microsoft_tts",
-    version="1.0.5",
+    version="1.0.7",
     description="Wyoming Server for Microsoft TTS",
     url="https://github.com/hugobloem/wyoming-microsoft-tts",
     author="Hugo Bloem",
