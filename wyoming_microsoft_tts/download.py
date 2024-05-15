@@ -1,4 +1,5 @@
 """Utility for downloading Microsoft voices."""
+
 import json
 import logging
 from pathlib import Path
@@ -37,22 +38,26 @@ def transform_voices_files(response):
     voices = {}
     for entry in json_response:
         country = countries.get(alpha_2=entry["Locale"].split("-")[1])
-        voices[entry["ShortName"]] = {
-            "key": entry["ShortName"],
-            "name": entry["LocalName"],
-            "language": {
-                "code": entry["Locale"],
-                "family": entry["Locale"].split("-")[0],
-                "region": country.alpha_2,
-                "name_native": entry["LocaleName"],
-                "name_english": entry["LocaleName"],
-                "country_english": country.name,
-            },
-            "quality": entry["VoiceType"],
-            "num_speakers": 1,
-            "speaker_id_map": {},
-            "aliases": [],
-        }
+        try:
+            voices[entry["ShortName"]] = {
+                "key": entry["ShortName"],
+                "name": entry["LocalName"],
+                "language": {
+                    "code": entry["Locale"],
+                    "family": entry["Locale"].split("-")[0],
+                    "region": country.alpha_2,
+                    "name_native": entry["LocaleName"],
+                    "name_english": entry["LocaleName"],
+                    "country_english": country.name,
+                },
+                "quality": entry["VoiceType"],
+                "num_speakers": 1,
+                "speaker_id_map": {},
+                "aliases": [],
+            }
+        except Exception as e:
+            _LOGGER.error("Failed to parse voice %s", entry["ShortName"])
+            _LOGGER.debug("%s: %s", entry["ShortName"], e)
     return voices
 
 
@@ -64,6 +69,7 @@ def get_voices(
 ) -> dict[str, Any]:
     """Load available voices from downloaded or embedded JSON file."""
     download_dir = Path(download_dir)
+    download_dir.mkdir(parents=True, exist_ok=True)
     voices_download = download_dir / "voices.json"
 
     if update_voices:
