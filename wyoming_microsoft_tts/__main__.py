@@ -8,9 +8,9 @@ from typing import Any
 from wyoming.info import Attribution, Info, TtsProgram, TtsVoice
 from wyoming.server import AsyncServer
 
-from .download import get_voices
-from .handler import MicrosoftEventHandler
-from .version import __version__
+from wyoming_microsoft_tts.download import get_voices
+from wyoming_microsoft_tts.handler import MicrosoftEventHandler
+from wyoming_microsoft_tts.version import __version__
 
 _LOGGER = logging.getLogger(__name__)
 
