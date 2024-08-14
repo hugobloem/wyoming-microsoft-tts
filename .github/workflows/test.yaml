@@ -21,8 +21,8 @@ jobs:
 
     - name: "Install dependencies"
       run: |
-        python3 -m pip install uv --no-cache-dir
-        python3 -m uv pip install -r requirements.txt pytest --no-cache-dir
+        python3 -m pip install --user uv --no-cache-dir
+        python3 -m uv pip install --user -r requirements.txt pytest --no-cache-dir
 
     - name: "Test with pytest"
       env:
