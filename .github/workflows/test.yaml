@@ -18,11 +18,13 @@ jobs:
 
     - name: Set up Python
       uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
 
     - name: "Install dependencies"
       run: |
-        python3 -m pip install --user uv --no-cache-dir
-        python3 -m uv pip install --user -r requirements.txt pytest --no-cache-dir
+        python3 -m pip install uv
+        python3 -m uv pip install -r requirements.txt pytest
 
     - name: "Test with pytest"
       env:
