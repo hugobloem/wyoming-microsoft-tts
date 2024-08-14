@@ -4,6 +4,10 @@ on:
   pull_request:
     branches: [main, dev]
 
+env:
+  SPEECH_REGION: ${{ secrets.SPEECH_REGION }}
+  SPEECH_KEY: ${{ secrets.SPEECH_KEY }}
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -26,9 +30,6 @@ jobs:
         python3 -m pip install uv
         python3 -m uv pip install . pytest
 
-    - name: "Test with pytest"
-      env:
-        SPEECH_REGION: ${{ secrets.SPEECH_REGION }}
-        SPEECH_KEY: ${{ secrets.SPEECH_KEY }}
+    - name: "Test with pytest"    
       run: |
         pytest
