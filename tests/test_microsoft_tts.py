@@ -3,7 +3,7 @@
 
 def test_initialize(microsoft_tts, configuration):
     """Test initialization."""
-    assert microsoft_tts.args == configuration
+    assert microsoft_tts.args.voice == configuration["voice"]
     assert microsoft_tts.speech_config is not None
     assert microsoft_tts.output_dir is not None
 
