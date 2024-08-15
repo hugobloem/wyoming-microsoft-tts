@@ -14,16 +14,20 @@ jobs:
     strategy:
       max-parallel: 5
       matrix:
-        python-version: ["3.11", "3.12", "3.13"]
+        python-version: ["3.11", "3.12"]
 
     steps:
+    - name: "Install required packages"
+      run: |
+        sudo apt-get install build-essential ca-certificates libasound2-dev libssl-dev wget
+    
     - name: "Checkout the repository"
       uses: actions/checkout@v4
 
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.11'
+        python-version: ${{ matrix.python-version }}
 
     - name: "Install dependencies"
       run: |
