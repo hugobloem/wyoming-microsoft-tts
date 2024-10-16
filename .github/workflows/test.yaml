@@ -19,6 +19,7 @@ jobs:
     steps:
     - name: "Install required packages"
       run: |
+        sudo apt-get update
         sudo apt-get install build-essential ca-certificates libasound2-dev libssl-dev wget
     
     - name: "Checkout the repository"
