@@ -1,4 +1,4 @@
-wyoming==1.5.4
+wyoming==1.6.0
 azure-cognitiveservices-speech==1.41.1
 black>=24,<25
 lxml>=5,<6
