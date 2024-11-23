@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/hugobloem/wyoming-microsoft-tts/compare/v1.1.0...v1.1.1) (2024-11-23)
+
+
+### 🐛 Bugfixes
+
+* use name of synthesize voice ([#89](https://github.com/hugobloem/wyoming-microsoft-tts/issues/89)) ([3f4a1f8](https://github.com/hugobloem/wyoming-microsoft-tts/commit/3f4a1f854c8048168cce7489547a0846052bce38))
+
 ## [1.1.0](https://github.com/hugobloem/wyoming-microsoft-tts/compare/1.0.8...v1.1.0) (2024-11-23)
 
 
