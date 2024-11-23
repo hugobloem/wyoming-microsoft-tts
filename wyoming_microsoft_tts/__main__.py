@@ -96,12 +96,18 @@ async def main() -> None:
     _LOGGER.debug("Arguments parsed successfully.")
 
     # Load voice info
-    voices_info = get_voices(
-        args.download_dir,
-        update_voices=args.update_voices,
-        region=args.service_region,
-        key=args.subscription_key,
-    )
+    try:
+        _LOGGER.info("Starting voices loading process.")
+        voices_info = get_voices(
+            args.download_dir,
+            update_voices=args.update_voices,
+            region=args.service_region,
+            key=args.subscription_key,
+        )
+        _LOGGER.info("Voices loaded successfully.")
+    except Exception as e:
+        _LOGGER.error(f"Failed to load voices: {e}")
+        return
 
     # Resolve aliases for backwards compatibility with old voice names
     aliases_info: dict[str, Any] = {}
@@ -166,13 +172,16 @@ async def main() -> None:
     server = AsyncServer.from_uri(args.uri)
 
     _LOGGER.info("Ready")
-    await server.run(
-        partial(
-            MicrosoftEventHandler,
-            wyoming_info,
-            args,
+    try:
+        await server.run(
+            partial(
+                MicrosoftEventHandler,
+                wyoming_info,
+                args,
+            )
         )
-    )
+    except Exception as e:
+        _LOGGER.error(f"An error occurred while running the server: {e}")
 
 
 # -----------------------------------------------------------------------------
