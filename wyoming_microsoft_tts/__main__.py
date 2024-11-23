@@ -4,6 +4,7 @@ import contextlib
 import logging
 import os
 import re
+import signal
 from functools import partial
 from typing import Any
 
@@ -189,5 +190,9 @@ def get_description(voice_info: dict[str, Any]):
 # -----------------------------------------------------------------------------
 
 if __name__ == "__main__":
+    # Set up signal handling for graceful shutdown
+    signal.signal(signal.SIGTERM, handle_stop_signal)
+    signal.signal(signal.SIGINT, handle_stop_signal)
+
     with contextlib.suppress(KeyboardInterrupt):
         asyncio.run(main())
