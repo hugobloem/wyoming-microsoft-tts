@@ -1,4 +1,5 @@
 """Event handler for clients of the server."""
+
 import argparse
 import logging
 import math
@@ -51,6 +52,9 @@ class MicrosoftEventHandler(AsyncEventHandler):
 
         # Join multiple lines
         text = " ".join(raw_text.strip().splitlines())
+        voice = synthesize.voice
+        if voice is None:  # Use default voice if not specified
+            voice = self.cli_args.voice
 
         if self.cli_args.auto_punctuation and text:
             # Add automatic punctuation (important for some voices)
@@ -63,9 +67,7 @@ class MicrosoftEventHandler(AsyncEventHandler):
             if not has_punctuation:
                 text = text + self.cli_args.auto_punctuation[0]
 
-        output_path = self.microsoft_tts.synthesize(
-            text=synthesize.text, voice=synthesize.voice.name
-        )
+        output_path = self.microsoft_tts.synthesize(text=synthesize.text, voice=voice)
 
         wav_file: wave.Wave_read = wave.open(output_path, "rb")
         with wav_file:
