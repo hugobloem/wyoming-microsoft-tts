@@ -77,6 +77,12 @@ async def main() -> None:
         for voice_alias in voice_info.get("aliases", []):
             aliases_info[voice_alias] = {"_is_alias": True, **voice_info}
 
+    # Make sure default voice is in the list
+    if args.voice not in voices_info:
+        raise ValueError(
+            f"Voice {args.voice} not found in voices.json, please look up the correct voice name here\nhttps://learn.microsoft.com/en-us/azure/ai-services/speech-service/language-support?tabs=tts"
+        )
+
     voices_info.update(aliases_info)
     voices = [
         TtsVoice(
