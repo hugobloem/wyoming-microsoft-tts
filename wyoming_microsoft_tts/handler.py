@@ -67,40 +67,50 @@ class MicrosoftEventHandler(AsyncEventHandler):
             if not has_punctuation:
                 text = text + self.cli_args.auto_punctuation[0]
 
-        output_path = self.microsoft_tts.synthesize(text=synthesize.text, voice=voice)
+        _LOGGER.debug("Synthesizing: %s", text)
+        try:
+            output_path = self.microsoft_tts.synthesize(text=text, voice=voice)
+        except Exception as e:
+            _LOGGER.error("Failed to synthesize text: %s", e)
+            return False
 
-        wav_file: wave.Wave_read = wave.open(output_path, "rb")
-        with wav_file:
-            rate = wav_file.getframerate()
-            width = wav_file.getsampwidth()
-            channels = wav_file.getnchannels()
+        _LOGGER.debug("Synthesized text")
+        try:
+            wav_file: wave.Wave_read = wave.open(output_path, "rb")
+            with wav_file:
+                rate = wav_file.getframerate()
+                width = wav_file.getsampwidth()
+                channels = wav_file.getnchannels()
 
-            await self.write_event(
-                AudioStart(
-                    rate=rate,
-                    width=width,
-                    channels=channels,
-                ).event(),
-            )
-
-            # Audio
-            audio_bytes = wav_file.readframes(wav_file.getnframes())
-            bytes_per_sample = width * channels
-            bytes_per_chunk = bytes_per_sample * self.cli_args.samples_per_chunk
-            num_chunks = int(math.ceil(len(audio_bytes) / bytes_per_chunk))
-
-            # Split into chunks
-            for i in range(num_chunks):
-                offset = i * bytes_per_chunk
-                chunk = audio_bytes[offset : offset + bytes_per_chunk]
                 await self.write_event(
-                    AudioChunk(
-                        audio=chunk,
+                    AudioStart(
                         rate=rate,
                         width=width,
                         channels=channels,
                     ).event(),
                 )
+
+                # Audio
+                audio_bytes = wav_file.readframes(wav_file.getnframes())
+                bytes_per_sample = width * channels
+                bytes_per_chunk = bytes_per_sample * self.cli_args.samples_per_chunk
+                num_chunks = int(math.ceil(len(audio_bytes) / bytes_per_chunk))
+
+                # Split into chunks
+                for i in range(num_chunks):
+                    offset = i * bytes_per_chunk
+                    chunk = audio_bytes[offset : offset + bytes_per_chunk]
+                    await self.write_event(
+                        AudioChunk(
+                            audio=chunk,
+                            rate=rate,
+                            width=width,
+                            channels=channels,
+                        ).event(),
+                    )
+        except Exception as e:
+            _LOGGER.error("Failed to send audio: %s", e)
+            return False
 
         await self.write_event(AudioStop().event())
         _LOGGER.debug("Completed request")
