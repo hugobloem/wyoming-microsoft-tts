@@ -24,6 +24,7 @@ def handle_stop_signal(*args):
     """Handle shutdown signal and set the stop event."""
     _LOGGER.info("Received stop signal. Shutting down...")
     stop_event.set()
+    exit(0)
 
 
 def parse_arguments():
