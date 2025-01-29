@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.2](https://github.com/hugobloem/wyoming-microsoft-tts/compare/v1.1.1...v1.1.2) (2025-01-29)
+
+
+### 🏗️ Maintenance
+
+* **deps:** bump azure-cognitiveservices-speech from 1.41.1 to 1.42.0 ([#94](https://github.com/hugobloem/wyoming-microsoft-tts/issues/94)) ([f70c126](https://github.com/hugobloem/wyoming-microsoft-tts/commit/f70c1261c20eb4b689b23a8110112fd1ce10b1c0))
+* **deps:** update black requirement from &lt;25,&gt;=24 to >=24,<26 ([#96](https://github.com/hugobloem/wyoming-microsoft-tts/issues/96)) ([051a3fc](https://github.com/hugobloem/wyoming-microsoft-tts/commit/051a3fc9d425af302bb72882e96f9493be4a3526))
+
 ## [1.1.1](https://github.com/hugobloem/wyoming-microsoft-tts/compare/v1.1.0...v1.1.1) (2024-11-23)
 
 
