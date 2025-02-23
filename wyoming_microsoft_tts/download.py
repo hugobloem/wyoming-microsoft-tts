@@ -116,7 +116,7 @@ def get_voices(
     voices_embedded = _DIR / "voices.json"
     _LOGGER.debug("Loading %s", voices_embedded)
     with open(voices_embedded, encoding="utf-8") as voices_file:
-        return json.load(voices_file)
+        return transform_voices_files(voices_file)
 
 
 def find_voice(name: str, download_dir: Union[str, Path]) -> dict[str, Any]:
