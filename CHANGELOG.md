@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.2.0](https://github.com/hugobloem/wyoming-microsoft-tts/compare/v1.1.2...v1.2.0) (2025-02-23)
+
+
+### 🚀 Features
+
+* support multilingual voices from the secondaryLocaleList ([#99](https://github.com/hugobloem/wyoming-microsoft-tts/issues/99)) ([876c4a5](https://github.com/hugobloem/wyoming-microsoft-tts/commit/876c4a53e4b9f886b84175b83980ad8e3d42ba25))
+
+
+### 🧪 Tests
+
+* add python 3.13 ([#100](https://github.com/hugobloem/wyoming-microsoft-tts/issues/100)) ([079a1fa](https://github.com/hugobloem/wyoming-microsoft-tts/commit/079a1fa7045218b458d9c6886dc0968abdedb833))
+
 ## [1.1.2](https://github.com/hugobloem/wyoming-microsoft-tts/compare/v1.1.1...v1.1.2) (2025-01-29)
 
 
