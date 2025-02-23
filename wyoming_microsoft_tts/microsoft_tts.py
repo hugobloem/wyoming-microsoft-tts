@@ -6,6 +6,8 @@ from pathlib import Path
 
 import azure.cognitiveservices.speech as speechsdk
 
+from .download import get_voices
+
 _LOGGER = logging.getLogger(__name__)
 
 
@@ -25,13 +27,16 @@ class MicrosoftTTS:
         output_dir.mkdir(parents=True, exist_ok=True)
         self.output_dir = output_dir
 
+        self.voices = get_voices(args.download_dir)
+
     def synthesize(self, text, voice=None):
         """Synthesize text to speech."""
         _LOGGER.debug(f"Requested TTS for [{text}]")
         if voice is None:
             voice = self.args.voice
 
-        self.speech_config.speech_synthesis_voice_name = voice
+        # Convert the requested voice to the key microsoft use.
+        self.speech_config.speech_synthesis_voice_name = self.voices[voice]["key"]
 
         file_name = self.output_dir / f"{time.monotonic_ns()}.wav"
         audio_config = speechsdk.audio.AudioOutputConfig(filename=str(file_name))

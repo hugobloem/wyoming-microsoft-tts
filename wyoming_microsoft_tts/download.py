@@ -33,7 +33,7 @@ def _quote_url(url: str) -> str:
 
 
 def transform_voices_files(response):
-    """Transform the voices.json file from the Microsoft API to the format used by Piper."""
+    """Transform the voices.json file from the Microsoft API to the format used by Wyoming."""
     json_response = json.load(response)
     voices = {}
     for entry in json_response:
@@ -55,6 +55,25 @@ def transform_voices_files(response):
                 "speaker_id_map": {},
                 "aliases": [],
             }
+            if "SecondaryLocaleList" in entry:
+                for secondary_locale in entry["SecondaryLocaleList"]:
+                    country = countries.get(alpha_2=secondary_locale.split("-")[1])
+                    voices[entry["ShortName"].replace(entry["Locale"], secondary_locale)] = {
+                        "key": entry["ShortName"],
+                        "name": entry["LocalName"],
+                        "language": {
+                            "code": secondary_locale,
+                            "family": secondary_locale.split("-")[0],
+                            "region": country.alpha_2,
+                            "name_native": secondary_locale,
+                            "name_english": secondary_locale,
+                            "country_english": country.name,
+                        },
+                        "quality": entry["VoiceType"],
+                        "num_speakers": 1,
+                        "speaker_id_map": {},
+                        "aliases": [],
+                    }
         except Exception as e:
             _LOGGER.error("Failed to parse voice %s", entry["ShortName"])
             _LOGGER.debug("%s: %s", entry["ShortName"], e)
@@ -97,7 +116,7 @@ def get_voices(
     voices_embedded = _DIR / "voices.json"
     _LOGGER.debug("Loading %s", voices_embedded)
     with open(voices_embedded, encoding="utf-8") as voices_file:
-        return json.load(voices_file)
+        return transform_voices_files(voices_file)
 
 
 def find_voice(name: str, download_dir: Union[str, Path]) -> dict[str, Any]:

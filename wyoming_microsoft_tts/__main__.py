@@ -3,7 +3,6 @@ import asyncio
 import contextlib
 import logging
 import os
-import re
 import signal
 from functools import partial
 from typing import Any
@@ -79,11 +78,6 @@ def validate_args(args):
     if not args.service_region or not args.subscription_key:
         raise ValueError(
             "Both --service-region and --subscription-key must be provided either as command-line arguments or environment variables."
-        )
-    # Reinstate key validation with more flexibility to accommodate complex keys
-    if not re.match(r"^[A-Za-z0-9\-_]{40,}$", args.subscription_key):
-        _LOGGER.warning(
-            "The subscription key does not match the expected format but will attempt to initialize."
         )
 
 
