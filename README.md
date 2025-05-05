@@ -53,6 +53,6 @@ python -m wyoming-microsoft-tts --<key> <value>
 | `download-dir` | Yes | Directory to download voices.json into (default: /tmp/) |
 | `voice` | Yes | Default voice to set for transcription, default: `en-GB-SoniaNeural` |
 | `auto-punctuation` | Yes | Automatically add punctuation (default: `".?!"`) |
-| `samples-per-chunk` | Yes | Number of samples per audio chunk (default: 1024) |
+| `sample-rate` | Yes | Sample rate (Hz) 8000, 16000, 22050, 24000, 44100, 48000 (default: 16000) |
 | `update-voices` | Yes | Download latest languages.json during startup |
 | `debug` | Yes | Log debug messages |

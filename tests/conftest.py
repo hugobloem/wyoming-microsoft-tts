@@ -20,6 +20,7 @@ def microsoft_tts(configuration):
     args = SimpleNamespace(
         subscription_key=os.environ.get("SPEECH_KEY"),
         service_region=os.environ.get("SPEECH_REGION"),
+        sample_rate=16000,
         download_dir="/tmp/",
         **configuration
     )

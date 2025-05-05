@@ -61,7 +61,13 @@ def parse_arguments():
     parser.add_argument(
         "--auto-punctuation", default=".?!", help="Automatically add punctuation"
     )
-    parser.add_argument("--samples-per-chunk", type=int, default=1024)
+    parser.add_argument(
+        "--sample-rate",
+        help="Sample rate (Hz)",
+        choices=[8000, 16000, 22050, 24000, 44100, 48000],
+        type=int,
+        default=16000,
+    )
     #
     parser.add_argument(
         "--update-voices",
@@ -123,7 +129,7 @@ async def main() -> None:
             name=voice_name,
             description=get_description(voice_info),
             attribution=Attribution(
-                name="Microsoft",
+                name="Microsoft TTS",
                 url="https://github.com/hugobloem/wyoming-microsoft-tts",
             ),
             installed=True,
@@ -150,8 +156,8 @@ async def main() -> None:
     wyoming_info = Info(
         tts=[
             TtsProgram(
-                name="microsoft",
-                description="A fast, local, neural text to speech engine",
+                name="Microsoft TTS",
+                description="TTS with Azure Speech Service",
                 attribution=Attribution(
                     name="Microsoft",
                     url="https://github.com/hugobloem/wyoming-microsoft-tts",
