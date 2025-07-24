@@ -42,9 +42,9 @@ Depending on your use case there are different installation options.
   Below is a sample for a docker compose file. The azure region + subscription key can be set in environmentvariables. Everything else needs to be passed via command line arguments.
   
   ```yaml
-  wyoming-proxy-azure-stt:
+  wyoming-proxy-azure-tts:
     image: ghcr.io/hugobloem/wyoming-microsoft-tts-noha
-    container_name: wyoming-azure-stt
+    container_name: wyoming-azure-tts
     ports:
       - "10300:10300"
     environment:
