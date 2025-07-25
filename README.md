@@ -46,7 +46,7 @@ Depending on your use case there are different installation options.
     image: ghcr.io/hugobloem/wyoming-microsoft-tts-noha
     container_name: wyoming-azure-tts
     ports:
-      - "10300:10300"
+      - "10200:10200"
     environment:
       AZURE_SERVICE_REGION: swedencentral
       AZURE_SUBSCRIPTION_KEY: XXX
