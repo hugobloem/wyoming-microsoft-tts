@@ -4,15 +4,24 @@ import argparse
 import logging
 import math
 import os
+from typing import Optional
 import wave
 
 from wyoming.audio import AudioChunk, AudioStart, AudioStop
+from wyoming.error import Error
 from wyoming.event import Event
 from wyoming.info import Describe, Info
 from wyoming.server import AsyncEventHandler
-from wyoming.tts import Synthesize
+from wyoming.tts import (
+    Synthesize,
+    SynthesizeChunk,
+    SynthesizeStart,
+    SynthesizeStop,
+    SynthesizeStopped,
+)
 
 from .microsoft_tts import MicrosoftTTS
+from .sentence_boundary import SentenceBoundaryDetector, remove_asterisks
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -33,6 +42,9 @@ class MicrosoftEventHandler(AsyncEventHandler):
         self.cli_args = cli_args
         self.wyoming_info_event = wyoming_info.event()
         self.microsoft_tts = MicrosoftTTS(cli_args)
+        self.sbd = SentenceBoundaryDetector()
+        self.is_streaming: Optional[bool] = None
+        self._synthesize: Optional[Synthesize] = None
 
     async def handle_event(self, event: Event) -> bool:
         """Handle an event."""
@@ -41,13 +53,63 @@ class MicrosoftEventHandler(AsyncEventHandler):
             _LOGGER.debug("Sent info")
             return True
 
-        if not Synthesize.is_type(event.type):
-            _LOGGER.warning("Unexpected event: %s", event)
-            return True
+        try:
+            if Synthesize.is_type(event.type):
+                if self.is_streaming:
+                    return True
 
-        synthesize = Synthesize.from_event(event)
+                synthesize = Synthesize.from_event(event)
+                synthesize.text = remove_asterisks(synthesize.text)
+                await self._handle_synthesize(synthesize)
+
+            if self.cli_args.no_streaming:
+                return True
+
+            if SynthesizeStart.is_type(event.type):
+                # Start of a stream
+                stream_start = SynthesizeStart.from_event(event)
+                self.is_streaming = True
+                self.sbd = SentenceBoundaryDetector()
+                self._synthesize = Synthesize(text="", voice=stream_start.voice)
+                _LOGGER.debug("Text stream started: voice=%s", stream_start.voice)
+                return True
+
+            if SynthesizeChunk.is_type(event.type):
+                assert self._synthesize is not None
+                stream_chunk = SynthesizeChunk.from_event(event)
+                for sentence in self.sbd.add_chunk(stream_chunk.text):
+                    _LOGGER.debug("Synthesizing stream sentence: %s", sentence)
+                    self._synthesize.text = sentence
+                    await self._handle_synthesize(self._synthesize)
+
+                return True
+
+            if SynthesizeStop.is_type(event.type):
+                assert self._synthesize is not None
+                self._synthesize.text = self.sbd.finish()
+                if self._synthesize.text:
+                    # Final audio chunk(s)
+                    await self._handle_synthesize(self._synthesize)
+
+                # End of audio
+                await self.write_event(SynthesizeStopped().event())
+
+                _LOGGER.debug("Text stream stopped")
+                return True
+
+            if not Synthesize.is_type(event.type):
+                return True
+
+            synthesize = Synthesize.from_event(event)
+            return await self._handle_synthesize(synthesize)
+        except Exception as err:
+            await self.write_event(
+                Error(text=str(err), code=err.__class__.__name__).event()
+            )
+            raise err
+
+    async def _handle_synthesize(self, synthesize: Synthesize):
         _LOGGER.debug(synthesize)
-
         raw_text = synthesize.text
 
         # Join multiple lines

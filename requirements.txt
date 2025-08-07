@@ -4,3 +4,4 @@ black>=24,<26
 lxml>=5,<7
 pycountry>=23.12.11
 ruff
+regex
