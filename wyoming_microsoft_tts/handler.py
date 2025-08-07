@@ -62,7 +62,7 @@ class MicrosoftEventHandler(AsyncEventHandler):
                 synthesize.text = remove_asterisks(synthesize.text)
                 await self._handle_synthesize(synthesize)
 
-            if self.cli.no_streaming:
+            if self.cli_args.no_streaming:
                 return True
             
             if SynthesizeStart.is_type(event.type):
