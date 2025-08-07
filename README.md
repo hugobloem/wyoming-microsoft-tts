@@ -37,6 +37,22 @@ Depending on your use case there are different installation options.
   ```
   For the relevant keys please look at [the table below](#usage)
 
+- **docker compose**
+
+  Below is a sample for a docker compose file. The azure region + subscription key can be set in environment variables. Everything else needs to be passed via command line arguments.
+  
+  ```yaml
+  wyoming-proxy-azure-tts:
+    image: ghcr.io/hugobloem/wyoming-microsoft-tts-noha
+    container_name: wyoming-azure-tts
+    ports:
+      - "10200:10200"
+    environment:
+      AZURE_SERVICE_REGION: swedencentral
+      AZURE_SUBSCRIPTION_KEY: XXX
+    command: --voice=en-GB-SoniaNeural --uri=tcp://0.0.0.0:10200
+  ```
+
 ## Usage
 Depending on the installation method parameters are parsed differently. However, the same options are used for each of the installation methods and can be found in the table below. Your service region and subscription key can be found on the speech service resource page (step 5 the Azure Speech service instructions).
 
