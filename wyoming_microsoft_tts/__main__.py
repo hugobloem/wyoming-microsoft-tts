@@ -61,6 +61,11 @@ def parse_arguments():
     parser.add_argument(
         "--auto-punctuation", default=".?!", help="Automatically add punctuation"
     )
+    parser.add_argument(
+        "--no-streaming",
+        action="store_true",
+        help="Disable audio streaming on sentence boundaries",
+    )
     parser.add_argument("--samples-per-chunk", type=int, default=1024)
     #
     parser.add_argument(
@@ -159,6 +164,7 @@ async def main() -> None:
                 installed=True,
                 version=__version__,
                 voices=sorted(voices, key=lambda v: v.name),
+                supports_synthesize_streaming=not args.no_streaming,
             )
         ],
     )
