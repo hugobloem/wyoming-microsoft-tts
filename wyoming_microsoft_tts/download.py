@@ -58,7 +58,9 @@ def transform_voices_files(response):
             if "SecondaryLocaleList" in entry:
                 for secondary_locale in entry["SecondaryLocaleList"]:
                     country = countries.get(alpha_2=secondary_locale.split("-")[1])
-                    voices[entry["ShortName"].replace(entry["Locale"], secondary_locale)] = {
+                    voices[
+                        entry["ShortName"].replace(entry["Locale"], secondary_locale)
+                    ] = {
                         "key": entry["ShortName"],
                         "name": entry["LocalName"],
                         "language": {
