@@ -16,11 +16,15 @@ LINE_ASTERICKS = re.compile(r"(?<=^|\n)\s*\*+")
 
 
 class SentenceBoundaryDetector:
+    """Detect sentence boundaries in text."""
+
     def __init__(self) -> None:
+        """Initialize the sentence boundary detector."""
         self.remaining_text = ""
         self.current_sentence = ""
 
     def add_chunk(self, chunk: str) -> Iterable[str]:
+        """Add a chunk of text and yield complete sentences."""
         self.remaining_text += chunk
         while self.remaining_text:
             match = SENTENCE_BOUNDARY_RE.search(self.remaining_text)
@@ -44,6 +48,7 @@ class SentenceBoundaryDetector:
             self.remaining_text = self.remaining_text[match.end() :]
 
     def finish(self) -> str:
+        """Return the remaining text as a single item."""
         text = (self.current_sentence + self.remaining_text).strip()
         self.remaining_text = ""
         self.current_sentence = ""
@@ -52,7 +57,7 @@ class SentenceBoundaryDetector:
 
 
 def remove_asterisks(text: str) -> str:
-    """Remove *asterisks* surrounding **words**"""
+    """Remove *asterisks* surrounding **words**."""
     text = WORD_ASTERISKS.sub(r"\1", text)
     text = LINE_ASTERICKS.sub("", text)
     return text

@@ -57,14 +57,14 @@ class MicrosoftEventHandler(AsyncEventHandler):
             if Synthesize.is_type(event.type):
                 if self.is_streaming:
                     return True
-                
+
                 synthesize = Synthesize.from_event(event)
                 synthesize.text = remove_asterisks(synthesize.text)
                 await self._handle_synthesize(synthesize)
 
             if self.cli_args.no_streaming:
                 return True
-            
+
             if SynthesizeStart.is_type(event.type):
                 # Start of a stream
                 stream_start = SynthesizeStart.from_event(event)
@@ -73,7 +73,7 @@ class MicrosoftEventHandler(AsyncEventHandler):
                 self._synthesize = Synthesize(text="", voice=stream_start.voice)
                 _LOGGER.debug("Text stream started: voice=%s", stream_start.voice)
                 return True
-            
+
             if SynthesizeChunk.is_type(event.type):
                 assert self._synthesize is not None
                 stream_chunk = SynthesizeChunk.from_event(event)
@@ -83,7 +83,7 @@ class MicrosoftEventHandler(AsyncEventHandler):
                     await self._handle_synthesize(self._synthesize)
 
                 return True
-            
+
             if SynthesizeStop.is_type(event.type):
                 assert self._synthesize is not None
                 self._synthesize.text = self.sbd.finish()
@@ -96,10 +96,10 @@ class MicrosoftEventHandler(AsyncEventHandler):
 
                 _LOGGER.debug("Text stream stopped")
                 return True
-            
+
             if not Synthesize.is_type(event.type):
                 return True
-            
+
             synthesize = Synthesize.from_event(event)
             return await self._handle_synthesize(synthesize)
         except Exception as err:
