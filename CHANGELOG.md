@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/hugobloem/wyoming-microsoft-tts/compare/v1.2.1...v1.3.0) (2025-08-07)
+
+
+### 🚀 Features
+
+* add partial sentence synthesizing support ([#116](https://github.com/hugobloem/wyoming-microsoft-tts/issues/116)) ([caa6183](https://github.com/hugobloem/wyoming-microsoft-tts/commit/caa61839bb13ff69d2c3e263bbfeb70bc0bf59a9))
+
 ## [1.2.1](https://github.com/hugobloem/wyoming-microsoft-tts/compare/v1.2.0...v1.2.1) (2025-08-07)
 
 
