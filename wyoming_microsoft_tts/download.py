@@ -137,8 +137,8 @@ def get_voices(
             req = Request(_quote_url(voices_url), headers=voices_hdr)
             with urlopen(req) as response, open(voices_download, "w") as download_file:
                 json.dump(transform_voices_files(response), download_file, indent=4)
-        except Exception:
-            _LOGGER.exception("Failed to update voices list")
+        except Exception as e:
+            _LOGGER.warning("Failed to update voices list: %s. Using fallback embedded voices.json.", e)
 
     # Prefer downloaded file to embedded
     if voices_download.exists():
