@@ -32,23 +32,50 @@ def _quote_url(url: str) -> str:
     return urlunsplit(parts)
 
 
+def _get_country_from_locale(locale: str):
+    """Extract country information from a locale string.
+
+    Handles both standard (lang-COUNTRY) and extended (lang-script-COUNTRY) locale formats.
+    """
+    parts = locale.split("-")
+
+    # For extended locales like "iu-Cans-CA", the country code is the last part
+    if len(parts) >= 3:
+        country_code = parts[-1]
+    elif len(parts) == 2:
+        country_code = parts[1]
+    else:
+        return None
+
+    return countries.get(alpha_2=country_code)
+
+
 def transform_voices_files(response):
     """Transform the voices.json file from the Microsoft API to the format used by Wyoming."""
     json_response = json.load(response)
     voices = {}
     for entry in json_response:
-        country = countries.get(alpha_2=entry["Locale"].split("-")[1])
+        country = _get_country_from_locale(entry["Locale"])
         try:
+            # Use fallback values if country lookup fails
+            if country is None:
+                region = entry["Locale"].split("-")[-1]  # Use the last part as region
+                country_name = "Unknown"
+                _LOGGER.warning("Could not find country for locale %s, using fallback values", entry["Locale"])
+            else:
+                region = country.alpha_2
+                country_name = country.name
+
             voices[entry["ShortName"]] = {
                 "key": entry["ShortName"],
                 "name": entry["LocalName"],
                 "language": {
                     "code": entry["Locale"],
                     "family": entry["Locale"].split("-")[0],
-                    "region": country.alpha_2,
+                    "region": region,
                     "name_native": entry["LocaleName"],
                     "name_english": entry["LocaleName"],
-                    "country_english": country.name,
+                    "country_english": country_name,
                 },
                 "quality": entry["VoiceType"],
                 "num_speakers": 1,
@@ -57,17 +84,27 @@ def transform_voices_files(response):
             }
             if "SecondaryLocaleList" in entry:
                 for secondary_locale in entry["SecondaryLocaleList"]:
-                    country = countries.get(alpha_2=secondary_locale.split("-")[1])
+                    secondary_country = _get_country_from_locale(secondary_locale)
+
+                    # Use fallback values if country lookup fails
+                    if secondary_country is None:
+                        secondary_region = secondary_locale.split("-")[-1]
+                        secondary_country_name = "Unknown"
+                        _LOGGER.warning("Could not find country for secondary locale %s, using fallback values", secondary_locale)
+                    else:
+                        secondary_region = secondary_country.alpha_2
+                        secondary_country_name = secondary_country.name
+
                     voices[entry["ShortName"].replace(entry["Locale"], secondary_locale)] = {
                         "key": entry["ShortName"],
                         "name": entry["LocalName"],
                         "language": {
                             "code": secondary_locale,
                             "family": secondary_locale.split("-")[0],
-                            "region": country.alpha_2,
+                            "region": secondary_region,
                             "name_native": secondary_locale,
                             "name_english": secondary_locale,
-                            "country_english": country.name,
+                            "country_english": secondary_country_name,
                         },
                         "quality": entry["VoiceType"],
                         "num_speakers": 1,
