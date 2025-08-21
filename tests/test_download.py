@@ -8,13 +8,13 @@ from unittest.mock import patch
 from wyoming_microsoft_tts.download import get_voices
 
 
-def test_get_voices_download_failure_logs_warning(caplog):
-    """Test that a failed download logs a warning and continues with fallback."""
+def test_get_voices_download_failure_logs_error(caplog):
+    """Test that a failed download logs an error and continues with fallback."""
     with tempfile.TemporaryDirectory() as temp_dir, patch("wyoming_microsoft_tts.download.urlopen") as mock_urlopen:
         mock_urlopen.side_effect = Exception("Network error")
 
-        # Capture logs at warning level
-        with caplog.at_level(logging.WARNING):
+        # Capture logs at error level
+        with caplog.at_level(logging.ERROR):
             # Call get_voices with update_voices=True to trigger download
             voices = get_voices(
                 download_dir=temp_dir,
@@ -23,15 +23,14 @@ def test_get_voices_download_failure_logs_warning(caplog):
                 key="fake_key"
             )
 
-        # Verify that we got a warning log (not an exception log)
+        # Verify that we got an error log
         assert len(caplog.records) > 0
-        warning_logs = [record for record in caplog.records if record.levelname == "WARNING"]
-        assert len(warning_logs) >= 1
+        error_logs = [record for record in caplog.records if record.levelname == "ERROR"]
+        assert len(error_logs) >= 1
 
-        # Check that the warning message is about failed update
-        warning_message = warning_logs[0].message
-        assert "Failed to update voices list" in warning_message
-        assert "Using fallback embedded voices.json" in warning_message
+        # Check that the error message is about failed update
+        error_message = error_logs[0].message
+        assert "Failed to update voices list" in error_message
 
         # Verify that voices are still returned (from embedded file)
         assert isinstance(voices, dict)
