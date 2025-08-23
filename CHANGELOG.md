@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.3](https://github.com/hugobloem/wyoming-microsoft-tts/compare/v1.3.2...v1.3.3) (2025-08-23)
+
+
+### 👷 Continuous Integration
+
+* Add GitHub Actions workflow for package publishing ([3590efb](https://github.com/hugobloem/wyoming-microsoft-tts/commit/3590efb2e8367c36ad9ec4d2f05bb3c9e5fed307))
+
 ## [1.3.2](https://github.com/hugobloem/wyoming-microsoft-tts/compare/v1.3.1...v1.3.2) (2025-08-23)
 
 
