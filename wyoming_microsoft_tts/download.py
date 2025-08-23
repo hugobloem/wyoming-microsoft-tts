@@ -55,8 +55,11 @@ def transform_voices_files(response):
     json_response = json.load(response)
     voices = {}
     for entry in json_response:
-        country = _get_country_from_locale(entry["Locale"])
+        if not isinstance(entry, dict):
+            continue
+        
         try:
+            country = _get_country_from_locale(entry["Locale"])
             # Use fallback values if country lookup fails
             if country is None:
                 region = entry["Locale"].split("-")[-1]  # Use the last part as region
@@ -112,8 +115,8 @@ def transform_voices_files(response):
                         "aliases": [],
                     }
         except Exception as e:
-            _LOGGER.error("Failed to parse voice %s", entry["ShortName"])
-            _LOGGER.debug("%s: %s", entry["ShortName"], e)
+            _LOGGER.exception("Failed to parse voice %s", entry.get("ShortName", "Unknown"))
+            _LOGGER.debug("%s: %s", entry.get("ShortName", "Unknown"), e)
     return voices
 
 
@@ -143,7 +146,7 @@ def get_voices(
     # Prefer downloaded file to embedded
     if voices_download.exists():
         try:
-            _LOGGER.debug("Loading %s", voices_download)
+            _LOGGER.debug("Loading downloaded file: %s", voices_download)
             with open(voices_download, encoding="utf-8") as voices_file:
                 return json.load(voices_file)
         except Exception:
@@ -151,7 +154,7 @@ def get_voices(
 
     # Fall back to embedded
     voices_embedded = _DIR / "voices.json"
-    _LOGGER.debug("Loading %s", voices_embedded)
+    _LOGGER.debug("Loading embedded file: %s", voices_embedded)
     with open(voices_embedded, encoding="utf-8") as voices_file:
         return transform_voices_files(voices_file)
 
