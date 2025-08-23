@@ -3,7 +3,7 @@
 import json
 import logging
 from pathlib import Path
-from typing import Any, Union
+from typing import Any
 from urllib.parse import quote, urlsplit, urlunsplit
 from urllib.request import Request, urlopen
 
@@ -131,7 +131,7 @@ def transform_voices_files(response):
 
 
 def get_voices(
-    download_dir: Union[str, Path],
+    download_dir: str | Path,
     update_voices: bool = False,
     region: str = "westus",
     key: str = "",
@@ -169,7 +169,7 @@ def get_voices(
         return transform_voices_files(voices_file)
 
 
-def find_voice(name: str, download_dir: Union[str, Path]) -> dict[str, Any]:
+def find_voice(name: str, download_dir: str | Path) -> dict[str, Any]:
     """Look for the files for a voice.
 
     Returns: Dict of voice info
