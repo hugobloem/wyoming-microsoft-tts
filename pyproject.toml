@@ -1,7 +1,25 @@
-# The contents of this file is based on https://github.com/home-assistant/core/blob/dev/pyproject.toml
+[project]
+name = "wyoming-microsoft-tts"
+version = "1.3.1"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "azure-cognitiveservices-speech>=1.45.0",
+    "black>=25.1.0",
+    "lxml>=6.0.1",
+    "pycountry>=24.6.1",
+    "regex>=2025.7.34",
+    "wyoming>=1.7.2",
+]
 
-target-version = "py39"
+[dependency-groups]
+dev = [
+    "pytest>=8.4.1",
+    "ruff>=0.12.10",
+]
 
+[tool.ruff]
 lint.select = [
     "B007", # Loop control variable {name} not used within loop body
     "B014", # Exception handler with duplicate exception
