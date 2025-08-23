@@ -21,16 +21,11 @@ jobs:
     - name: "Checkout the repository"
       uses: actions/checkout@v5
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
+    - name: "Set up Python"
+      uses: astral-sh/setup-uv@v6
       with:
-        python-version: 3.13
+        enable-cache: true
 
-    - name: "Install dependencies"
+    - name: "Test with pytest"
       run: |
-        python3 -m pip install uv
-        python3 -m uv pip install . pytest
-
-    - name: "Test with pytest"    
-      run: |
-        pytest
+        uv run pytest
