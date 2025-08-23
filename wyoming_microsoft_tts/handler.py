@@ -4,7 +4,6 @@ import argparse
 import logging
 import math
 import os
-from typing import Optional
 import wave
 
 from wyoming.audio import AudioChunk, AudioStart, AudioStop
@@ -43,10 +42,10 @@ class MicrosoftEventHandler(AsyncEventHandler):
         self.wyoming_info_event = wyoming_info.event()
         self.microsoft_tts = MicrosoftTTS(cli_args)
         self.sbd = SentenceBoundaryDetector()
-        self.is_streaming: Optional[bool] = None
-        self._synthesize: Optional[Synthesize] = None
+        self.is_streaming: bool | None = None
+        self._synthesize: Synthesize | None = None
 
-    async def handle_event(self, event: Event) -> bool:
+    async def handle_event(self, event: Event) -> bool:  # noqa: C901
         """Handle an event."""
         if Describe.is_type(event.type):
             await self.write_event(self.wyoming_info_event)
