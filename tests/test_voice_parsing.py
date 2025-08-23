@@ -16,29 +16,29 @@ def test_voice_parsing_with_script_codes():
             "Locale": "iu-Cans-CA",
             "LocalName": "Siqiniq",
             "LocaleName": "Inuktitut (Canadian Aboriginal Syllabics, Canada)",
-            "VoiceType": "Neural"
+            "VoiceType": "Neural",
         },
         {
             "ShortName": "iu-Latn-CA-TaqqiqNeural",
             "Locale": "iu-Latn-CA",
             "LocalName": "Taqqiq",
             "LocaleName": "Inuktitut (Latin, Canada)",
-            "VoiceType": "Neural"
+            "VoiceType": "Neural",
         },
         {
             "ShortName": "sr-Latn-RS-NicholasNeural",
             "Locale": "sr-Latn-RS",
             "LocalName": "Nicholas",
             "LocaleName": "Serbian (Latin, Serbia)",
-            "VoiceType": "Neural"
+            "VoiceType": "Neural",
         },
         {
             "ShortName": "en-US-JennyNeural",
             "Locale": "en-US",
             "LocalName": "Jenny",
             "LocaleName": "English (United States)",
-            "VoiceType": "Neural"
-        }
+            "VoiceType": "Neural",
+        },
     ]
 
     # Create a StringIO object to simulate the API response
@@ -79,7 +79,7 @@ def test_voice_parsing_with_secondary_locales():
             "LocalName": "Jenny",
             "LocaleName": "English (United States)",
             "VoiceType": "Neural",
-            "SecondaryLocaleList": ["de-DE", "es-ES"]
+            "SecondaryLocaleList": ["de-DE", "es-ES"],
         }
     ]
 
@@ -101,22 +101,22 @@ def test_voice_parsing_with_standard_locales():
             "Locale": "en-US",
             "LocalName": "Jenny",
             "LocaleName": "English (United States)",
-            "VoiceType": "Neural"
+            "VoiceType": "Neural",
         },
         {
             "ShortName": "fr-FR-DeniseNeural",
             "Locale": "fr-FR",
             "LocalName": "Denise",
             "LocaleName": "French (France)",
-            "VoiceType": "Neural"
+            "VoiceType": "Neural",
         },
         {
             "ShortName": "de-DE-KatjaNeural",
             "Locale": "de-DE",
             "LocalName": "Katja",
             "LocaleName": "German (Germany)",
-            "VoiceType": "Neural"
-        }
+            "VoiceType": "Neural",
+        },
     ]
 
     response_io = StringIO(json.dumps(sample_response))
@@ -144,15 +144,15 @@ def test_voice_parsing_with_invalid_locales():
             "Locale": "xx-INVALID",
             "LocalName": "Test",
             "LocaleName": "Test Language",
-            "VoiceType": "Neural"
+            "VoiceType": "Neural",
         },
         {
             "ShortName": "yy-ZZ-FAKE-TestNeural",
             "Locale": "yy-ZZ-FAKE",
             "LocalName": "Test2",
             "LocaleName": "Test Language 2",
-            "VoiceType": "Neural"
-        }
+            "VoiceType": "Neural",
+        },
     ]
 
     response_io = StringIO(json.dumps(sample_response))

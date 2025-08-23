@@ -57,14 +57,17 @@ def transform_voices_files(response):
     for entry in json_response:
         if not isinstance(entry, dict):
             continue
-        
+
         try:
             country = _get_country_from_locale(entry["Locale"])
             # Use fallback values if country lookup fails
             if country is None:
                 region = entry["Locale"].split("-")[-1]  # Use the last part as region
                 country_name = "Unknown"
-                _LOGGER.warning("Could not find country for locale %s, using fallback values", entry["Locale"])
+                _LOGGER.warning(
+                    "Could not find country for locale %s, using fallback values",
+                    entry["Locale"],
+                )
             else:
                 region = country.alpha_2
                 country_name = country.name
@@ -93,12 +96,17 @@ def transform_voices_files(response):
                     if secondary_country is None:
                         secondary_region = secondary_locale.split("-")[-1]
                         secondary_country_name = "Unknown"
-                        _LOGGER.warning("Could not find country for secondary locale %s, using fallback values", secondary_locale)
+                        _LOGGER.warning(
+                            "Could not find country for secondary locale %s, using fallback values",
+                            secondary_locale,
+                        )
                     else:
                         secondary_region = secondary_country.alpha_2
                         secondary_country_name = secondary_country.name
 
-                    voices[entry["ShortName"].replace(entry["Locale"], secondary_locale)] = {
+                    voices[
+                        entry["ShortName"].replace(entry["Locale"], secondary_locale)
+                    ] = {
                         "key": entry["ShortName"],
                         "name": entry["LocalName"],
                         "language": {
@@ -115,7 +123,9 @@ def transform_voices_files(response):
                         "aliases": [],
                     }
         except Exception as e:
-            _LOGGER.exception("Failed to parse voice %s", entry.get("ShortName", "Unknown"))
+            _LOGGER.exception(
+                "Failed to parse voice %s", entry.get("ShortName", "Unknown")
+            )
             _LOGGER.debug("%s: %s", entry.get("ShortName", "Unknown"), e)
     return voices
 

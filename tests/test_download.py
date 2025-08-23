@@ -10,7 +10,10 @@ from wyoming_microsoft_tts.download import get_voices
 
 def test_get_voices_download_failure_logs_error(caplog):
     """Test that a failed download logs an error and continues with fallback."""
-    with tempfile.TemporaryDirectory() as temp_dir, patch("wyoming_microsoft_tts.download.urlopen") as mock_urlopen:
+    with (
+        tempfile.TemporaryDirectory() as temp_dir,
+        patch("wyoming_microsoft_tts.download.urlopen") as mock_urlopen,
+    ):
         mock_urlopen.side_effect = Exception("Network error")
 
         # Capture logs at error level
@@ -20,12 +23,14 @@ def test_get_voices_download_failure_logs_error(caplog):
                 download_dir=temp_dir,
                 update_voices=True,
                 region="westus",
-                key="fake_key"
+                key="fake_key",
             )
 
         # Verify that we got an error log
         assert len(caplog.records) > 0
-        error_logs = [record for record in caplog.records if record.levelname == "ERROR"]
+        error_logs = [
+            record for record in caplog.records if record.levelname == "ERROR"
+        ]
         assert len(error_logs) >= 1
 
         # Check that the error message is about failed update
@@ -39,15 +44,15 @@ def test_get_voices_download_failure_logs_error(caplog):
 
 def test_get_voices_download_failure_uses_fallback():
     """Test that a failed download falls back to embedded voices."""
-    with tempfile.TemporaryDirectory() as temp_dir, patch("wyoming_microsoft_tts.download.urlopen") as mock_urlopen:
+    with (
+        tempfile.TemporaryDirectory() as temp_dir,
+        patch("wyoming_microsoft_tts.download.urlopen") as mock_urlopen,
+    ):
         mock_urlopen.side_effect = Exception("Network error")
 
         # Call get_voices with update_voices=True to trigger download
         voices = get_voices(
-            download_dir=temp_dir,
-            update_voices=True,
-            region="westus",
-            key="fake_key"
+            download_dir=temp_dir, update_voices=True, region="westus", key="fake_key"
         )
 
         # Verify that voices are still returned from embedded file
