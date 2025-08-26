@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.4](https://github.com/hugobloem/wyoming-microsoft-tts/compare/v1.3.3...v1.3.4) (2025-08-26)
+
+
+### 🏗️ Maintenance
+
+* **deps:** bump actions/checkout from 4 to 5 ([#125](https://github.com/hugobloem/wyoming-microsoft-tts/issues/125)) ([e52c418](https://github.com/hugobloem/wyoming-microsoft-tts/commit/e52c4182f862e8027765ad7f0786d75a4996a7b1))
+
 ## [1.3.3](https://github.com/hugobloem/wyoming-microsoft-tts/compare/v1.3.2...v1.3.3) (2025-08-23)
 
 
