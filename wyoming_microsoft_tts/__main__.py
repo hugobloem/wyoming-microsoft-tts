@@ -69,6 +69,32 @@ def parse_arguments():
     parser.add_argument("--samples-per-chunk", type=int, default=1024)
     #
     parser.add_argument(
+        "--rate",
+        type=str,
+        help="Speech rate (e.g., '+30%', '0.5', 'fast', 'slow')",
+    )
+    parser.add_argument(
+        "--pitch",
+        type=str,
+        help="Speech pitch (e.g., '+10%', 'high', 'low', '+80Hz')",
+    )
+    parser.add_argument(
+        "--volume",
+        type=str,
+        help="Speech volume (e.g., '+20%', 'loud', 'soft', '75')",
+    )
+    parser.add_argument(
+        "--style",
+        type=str,
+        help="Speaking style (e.g., 'cheerful', 'sad', 'angry', 'calm')",
+    )
+    parser.add_argument(
+        "--style-degree",
+        type=float,
+        help="Style intensity from 0.01 to 2 (default: 1)",
+    )
+    #
+    parser.add_argument(
         "--update-voices",
         action="store_true",
         help="Download latest voices.json during startup",
