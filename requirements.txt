@@ -1,6 +1,6 @@
 wyoming==1.8.0
 azure-cognitiveservices-speech==1.47.0
-black>=24,<26
+black>=24,<27
 lxml>=5,<7
 pycountry>=23.12.11
 ruff
