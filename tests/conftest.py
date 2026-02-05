@@ -21,6 +21,11 @@ def microsoft_tts(configuration):
         subscription_key=os.environ.get("SPEECH_KEY"),
         service_region=os.environ.get("SPEECH_REGION"),
         download_dir="/tmp/",
+        rate=None,
+        pitch=None,
+        volume=None,
+        style=None,
+        style_degree=None,
         **configuration,
     )
     return MicrosoftTTS(args)
