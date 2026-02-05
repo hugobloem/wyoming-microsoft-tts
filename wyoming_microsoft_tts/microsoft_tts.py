@@ -34,27 +34,27 @@ class MicrosoftTTS:
         """Build SSML with prosody and style parameters."""
         voice_key = self.voices[voice]["key"]
         voice_lang = self.voices[voice]["language"]["code"]
-        
+
         ssml_parts = [
             '<?xml version="1.0" encoding="UTF-8"?>',
             '<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis"',
         ]
-        
+
         if self.args.style or self.args.style_degree:
             ssml_parts.append(' xmlns:mstts="https://www.w3.org/2001/mstts"')
-        
+
         ssml_parts.append(f' xml:lang="{voice_lang}">')
         ssml_parts.append(f'<voice name="{voice_key}">')
-        
+
         has_style = self.args.style is not None
         has_prosody = any([self.args.rate, self.args.pitch, self.args.volume])
-        
+
         if has_style:
             style_attrs = [f'style="{self.args.style}"']
             if self.args.style_degree is not None:
                 style_attrs.append(f'styledegree="{self.args.style_degree}"')
             ssml_parts.append(f'<mstts:express-as {" ".join(style_attrs)}>')
-        
+
         if has_prosody:
             prosody_attrs = []
             if self.args.rate:
@@ -64,18 +64,18 @@ class MicrosoftTTS:
             if self.args.volume:
                 prosody_attrs.append(f'volume="{self.args.volume}"')
             ssml_parts.append(f'<prosody {" ".join(prosody_attrs)}>')
-        
+
         ssml_parts.append(text)
-        
+
         if has_prosody:
             ssml_parts.append('</prosody>')
-        
+
         if has_style:
             ssml_parts.append('</mstts:express-as>')
-        
+
         ssml_parts.append('</voice>')
         ssml_parts.append('</speak>')
-        
+
         return ''.join(ssml_parts)
 
     def synthesize(self, text, voice=None):
