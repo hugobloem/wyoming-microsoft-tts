@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.1](https://github.com/hugobloem/wyoming-microsoft-tts/compare/v1.4.0...v1.4.1) (2026-02-06)
+
+
+### 🐛 Bugfixes
+
+* escape percentage signs in argparse help ([#137](https://github.com/hugobloem/wyoming-microsoft-tts/issues/137)) ([a8fc1c7](https://github.com/hugobloem/wyoming-microsoft-tts/commit/a8fc1c7d8f925961ab85a0cbd07a200bdb414e43))
+
 ## [1.4.0](https://github.com/hugobloem/wyoming-microsoft-tts/compare/v1.3.5...v1.4.0) (2026-02-05)
 
 
