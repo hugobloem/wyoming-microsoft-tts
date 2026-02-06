@@ -71,17 +71,17 @@ def parse_arguments():
     parser.add_argument(
         "--rate",
         type=str,
-        help="Speech rate (e.g., '+30%', '0.5', 'fast', 'slow')",
+        help="Speech rate (e.g., '+30%%', '0.5', 'fast', 'slow')",
     )
     parser.add_argument(
         "--pitch",
         type=str,
-        help="Speech pitch (e.g., '+10%', 'high', 'low', '+80Hz')",
+        help="Speech pitch (e.g., '+10%%', 'high', 'low', '+80Hz')",
     )
     parser.add_argument(
         "--volume",
         type=str,
-        help="Speech volume (e.g., '+20%', 'loud', 'soft', '75')",
+        help="Speech volume (e.g., '+20%%', 'loud', 'soft', '75')",
     )
     parser.add_argument(
         "--style",
