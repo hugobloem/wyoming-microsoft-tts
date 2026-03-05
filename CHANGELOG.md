@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.2](https://github.com/hugobloem/wyoming-microsoft-tts/compare/v1.4.1...v1.4.2) (2026-03-05)
+
+
+### 🏗️ Maintenance
+
+* **deps:** bump azure-cognitiveservices-speech from 1.47.0 to 1.48.2 ([#140](https://github.com/hugobloem/wyoming-microsoft-tts/issues/140)) ([d189946](https://github.com/hugobloem/wyoming-microsoft-tts/commit/d18994698c8c3ee8d7615247e573630a066484ff))
+* **deps:** bump docker/login-action from 3 to 4 ([#141](https://github.com/hugobloem/wyoming-microsoft-tts/issues/141)) ([ce6db9a](https://github.com/hugobloem/wyoming-microsoft-tts/commit/ce6db9a44a168a171eb655c888e990701096fa6f))
+
 ## [1.4.1](https://github.com/hugobloem/wyoming-microsoft-tts/compare/v1.4.0...v1.4.1) (2026-02-06)
 
 
