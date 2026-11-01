@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.4.6](https://github.com/hugobloem/wyoming-microsoft-tts/compare/v1.4.5...v1.4.6) (2026-11-01)
+
+
+### 🏗️ Maintenance
+
+* **deps-dev:** bump pytest from 9.0.3 to 9.2.0 ([#209](https://github.com/hugobloem/wyoming-microsoft-tts/issues/209)) ([a106b69](https://github.com/hugobloem/wyoming-microsoft-tts/commit/a106b69b76609aabf360bbb3b92a351fc2ae1b71))
+* **deps-dev:** bump ruff from 0.15.12 to 0.17.3 ([#212](https://github.com/hugobloem/wyoming-microsoft-tts/issues/212)) ([ac1fa7f](https://github.com/hugobloem/wyoming-microsoft-tts/commit/ac1fa7f3eb180bca32aacff983317d2c3c3b857a))
+* **deps:** bump actions/checkout from 6 to 7 ([#189](https://github.com/hugobloem/wyoming-microsoft-tts/issues/189)) ([063da73](https://github.com/hugobloem/wyoming-microsoft-tts/commit/063da73097c770ffd4888013b245dbb244d183b1))
+* **deps:** bump azure-cognitiveservices-speech from 1.49.1 to 1.53.0 ([#213](https://github.com/hugobloem/wyoming-microsoft-tts/issues/213)) ([f0ceae5](https://github.com/hugobloem/wyoming-microsoft-tts/commit/f0ceae53eb19a4d1cdc18ebf62b6a6040e5ed98f))
+* **deps:** bump black from 26.3.1 to 26.10.1 ([#207](https://github.com/hugobloem/wyoming-microsoft-tts/issues/207)) ([3e3471c](https://github.com/hugobloem/wyoming-microsoft-tts/commit/3e3471ca53097b8099b82a5923303c57008ec9ab))
+* **deps:** bump docker/login-action from 4 to 4.5.2 ([#205](https://github.com/hugobloem/wyoming-microsoft-tts/issues/205)) ([8a9ef41](https://github.com/hugobloem/wyoming-microsoft-tts/commit/8a9ef41135cc42a16718a3456e766e87e240e9c3))
+* **deps:** bump lxml from 6.1.0 to 6.1.3 ([#211](https://github.com/hugobloem/wyoming-microsoft-tts/issues/211)) ([2b96484](https://github.com/hugobloem/wyoming-microsoft-tts/commit/2b96484d814fc6a314896c253468c9dd70e11fe7))
+* **deps:** bump regex from 2026.4.4 to 2026.9.29 ([#210](https://github.com/hugobloem/wyoming-microsoft-tts/issues/210)) ([1e941a2](https://github.com/hugobloem/wyoming-microsoft-tts/commit/1e941a23fc5adbc16fa1db4630739bdf5c934110))
+* **deps:** bump wyoming from 1.8.0 to 1.10.2 ([#208](https://github.com/hugobloem/wyoming-microsoft-tts/issues/208)) ([76ad596](https://github.com/hugobloem/wyoming-microsoft-tts/commit/76ad5965763b6eeb55e1b9b78ea882e2995b89a6))
+
 ## [1.4.5](https://github.com/hugobloem/wyoming-microsoft-tts/compare/v1.4.4...v1.4.5) (2026-05-04)
 
 
