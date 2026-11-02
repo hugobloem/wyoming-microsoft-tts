@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.7](https://github.com/hugobloem/wyoming-microsoft-tts/compare/v1.4.6...v1.4.7) (2026-11-02)
+
+
+### 🏗️ Maintenance
+
+* **deps:** bump docker/login-action from 4.5.2 to 4.7.0 ([#215](https://github.com/hugobloem/wyoming-microsoft-tts/issues/215)) ([03797ca](https://github.com/hugobloem/wyoming-microsoft-tts/commit/03797cab1634ca072e683a62d8cf4badd9a97995))
+
 ## [1.4.6](https://github.com/hugobloem/wyoming-microsoft-tts/compare/v1.4.5...v1.4.6) (2026-11-01)
 
 
