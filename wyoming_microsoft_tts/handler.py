@@ -120,15 +120,17 @@ class MicrosoftEventHandler(AsyncEventHandler):
             voice = synthesize.voice.name
 
         if self.cli_args.auto_punctuation and text:
-            # Add automatic punctuation (important for some voices)
-            has_punctuation = False
-            for punc_char in self.cli_args.auto_punctuation:
-                if text[-1] == punc_char:
-                    has_punctuation = True
-                    break
+            # Skip auto-punctuation when message contains SSML markup
+            if '<' not in text:
+                # Add automatic punctuation (important for some voices)
+                has_punctuation = False
+                for punc_char in self.cli_args.auto_punctuation:
+                    if text[-1] == punc_char:
+                        has_punctuation = True
+                        break
 
-            if not has_punctuation:
-                text = text + self.cli_args.auto_punctuation[0]
+                if not has_punctuation:
+                    text = text + self.cli_args.auto_punctuation[0]
 
         _LOGGER.debug("Synthesizing: %s", text)
         try:

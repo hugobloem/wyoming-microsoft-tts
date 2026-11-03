@@ -1,8 +1,10 @@
 """Microsoft TTS."""
 
 import logging
+import re
 import tempfile
 import time
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 import azure.cognitiveservices.speech as speechsdk
@@ -10,6 +12,10 @@ import azure.cognitiveservices.speech as speechsdk
 from .download import get_voices
 
 _LOGGER = logging.getLogger(__name__)
+
+_SSML_TAG_RE = re.compile(r"</?([\w:-]+)(?:\s[^>]*)?>")
+
+ET.register_namespace("mstts", "https://www.w3.org/2001/mstts")
 
 
 class MicrosoftTTS:
@@ -30,21 +36,150 @@ class MicrosoftTTS:
 
         self.voices = get_voices(args.download_dir)
 
+    @staticmethod
+    def _has_ssml_tags(text: str) -> bool:
+        """Check if text contains SSML markup tags."""
+        return bool(_SSML_TAG_RE.search(text))
+
+    @staticmethod
+    def _is_complete_ssml(text: str) -> bool:
+        """Check if text is a complete SSML document (starts with <speak or <?xml)."""
+        stripped = text.strip()
+        return stripped.startswith("<speak") or stripped.startswith("<?xml")
+
     def _build_ssml(self, text, voice):
-        """Build SSML with prosody and style parameters."""
+        """Build SSML with prosody and style parameters.
+
+        Handles three cases:
+        1. Complete SSML document — passed through as-is
+        2. SSML fragment — server defaults merged into inline tags
+        3. Plain text — existing behavior (wraps with server defaults)
+        """
         voice_key = self.voices[voice]["key"]
         voice_lang = self.voices[voice]["language"]["code"]
 
-        ssml_parts = [
+        if self._is_complete_ssml(text):
+            return text
+
+        if self._has_ssml_tags(text):
+            merged = self._merge_ssml_fragment(text)
+            if merged is not None:
+                return self._build_ssml_structure(merged, voice_key, voice_lang)
+
+        return self._build_ssml_plain(text, voice_key, voice_lang)
+
+    def _merge_ssml_fragment(self, text: str) -> str | None:
+        """Parse SSML fragment and merge server defaults into inline tags.
+
+        For each <prosody> tag: injects server rate/pitch/volume for any
+        attribute not already set on the tag.
+        For each <mstts:express-as> tag: injects server style/style_degree
+        for any attribute not already set on the tag.
+        """
+        try:
+            wrapped = f'<root xmlns:mstts="https://www.w3.org/2001/mstts">{text}</root>'
+            root = ET.fromstring(wrapped)
+        except ET.ParseError:
+            return None
+
+        ns_mstts = "https://www.w3.org/2001/mstts"
+
+        for elem in root.iter():
+            if elem.tag == "prosody":
+                if self.args.rate and "rate" not in elem.attrib:
+                    elem.set("rate", self.args.rate)
+                if self.args.pitch and "pitch" not in elem.attrib:
+                    elem.set("pitch", self.args.pitch)
+                if self.args.volume and "volume" not in elem.attrib:
+                    elem.set("volume", self.args.volume)
+
+            if elem.tag == f"{{{ns_mstts}}}express-as":
+                if self.args.style and "style" not in elem.attrib:
+                    elem.set("style", self.args.style)
+                if self.args.style_degree is not None and "styledegree" not in elem.attrib:
+                    elem.set("styledegree", str(self.args.style_degree))
+
+        result = ET.tostring(root, encoding="unicode")
+        close = result.index(">") + 1
+        return result[close : -len("</root>")]
+
+    def _get_style_attrs(self):
+        """Build style attribute list from server args."""
+        attrs = []
+        if self.args.style is not None:
+            attrs.append(f'style="{self.args.style}"')
+        if self.args.style_degree is not None:
+            attrs.append(f'styledegree="{self.args.style_degree}"')
+        return attrs
+
+    def _get_prosody_attrs(self):
+        """Build prosody attribute list from server args."""
+        attrs = []
+        if self.args.rate:
+            attrs.append(f'rate="{self.args.rate}"')
+        if self.args.pitch:
+            attrs.append(f'pitch="{self.args.pitch}"')
+        if self.args.volume:
+            attrs.append(f'volume="{self.args.volume}"')
+        return attrs
+
+    def _build_ssml_structure(self, inner_content, voice_key, voice_lang):
+        """Wrap inner content in SSML structure with server-level defaults.
+
+        The inner content may contain inline prosody/style tags that were
+        already merged with server defaults. Server-level wrappers are added
+        for attributes not covered inline:
+        - <prosody> wrapper always added if server has rate/pitch/volume
+          (Azure supports nested <prosody>; inner overrides outer per-attribute)
+        - <mstts:express-as> wrapper added only if no inline style tag exists
+        """
+        has_style = self.args.style is not None or self.args.style_degree is not None
+        has_prosody = any([self.args.rate, self.args.pitch, self.args.volume])
+        has_inline_style = "<mstts:express-as" in inner_content
+
+        parts = [
+            '<?xml version="1.0" encoding="UTF-8"?>',
+            '<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis"',
+        ]
+
+        if has_style or has_inline_style:
+            parts.append(' xmlns:mstts="https://www.w3.org/2001/mstts"')
+
+        parts.append(f' xml:lang="{voice_lang}">')
+        parts.append(f'<voice name="{voice_key}">')
+
+        if has_style and not has_inline_style:
+            style_attrs = self._get_style_attrs()
+            parts.append(f'<mstts:express-as {" ".join(style_attrs)}>')
+
+        if has_prosody:
+            prosody_attrs = self._get_prosody_attrs()
+            parts.append(f'<prosody {" ".join(prosody_attrs)}>')
+
+        parts.append(inner_content)
+
+        if has_prosody:
+            parts.append("</prosody>")
+        if has_style and not has_inline_style:
+            parts.append("</mstts:express-as>")
+
+        parts.append("</voice>")
+        parts.append("</speak>")
+
+        return "".join(parts)
+
+    def _build_ssml_plain(self, text, voice_key, voice_lang):
+        """Build SSML for plain text using only server-level defaults."""
+        parts = [
             '<?xml version="1.0" encoding="UTF-8"?>',
             '<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis"',
         ]
 
         if self.args.style or self.args.style_degree:
-            ssml_parts.append(' xmlns:mstts="https://www.w3.org/2001/mstts"')
+            parts.append(' xmlns:mstts="https://www.w3.org/2001/mstts"')
 
-        ssml_parts.append(f' xml:lang="{voice_lang}">')
-        ssml_parts.append(f'<voice name="{voice_key}">')
+        parts.append(f' xml:lang="{voice_lang}">')
+        parts.append(f'<voice name="{voice_key}">')
 
         has_style = self.args.style is not None
         has_prosody = any([self.args.rate, self.args.pitch, self.args.volume])
@@ -53,7 +188,7 @@ class MicrosoftTTS:
             style_attrs = [f'style="{self.args.style}"']
             if self.args.style_degree is not None:
                 style_attrs.append(f'styledegree="{self.args.style_degree}"')
-            ssml_parts.append(f'<mstts:express-as {" ".join(style_attrs)}>')
+            parts.append(f'<mstts:express-as {" ".join(style_attrs)}>')
 
         if has_prosody:
             prosody_attrs = []
@@ -63,20 +198,20 @@ class MicrosoftTTS:
                 prosody_attrs.append(f'pitch="{self.args.pitch}"')
             if self.args.volume:
                 prosody_attrs.append(f'volume="{self.args.volume}"')
-            ssml_parts.append(f'<prosody {" ".join(prosody_attrs)}>')
+            parts.append(f'<prosody {" ".join(prosody_attrs)}>')
 
-        ssml_parts.append(text)
+        parts.append(text)
 
         if has_prosody:
-            ssml_parts.append('</prosody>')
+            parts.append("</prosody>")
 
         if has_style:
-            ssml_parts.append('</mstts:express-as>')
+            parts.append("</mstts:express-as>")
 
-        ssml_parts.append('</voice>')
-        ssml_parts.append('</speak>')
+        parts.append("</voice>")
+        parts.append("</speak>")
 
-        return ''.join(ssml_parts)
+        return "".join(parts)
 
     def synthesize(self, text, voice=None):
         """Synthesize text to speech."""
@@ -94,7 +229,7 @@ class MicrosoftTTS:
             speech_config=self.speech_config, audio_config=audio_config
         )
 
-        if any([self.args.rate, self.args.pitch, self.args.volume, self.args.style, self.args.style_degree]):
+        if any([self.args.rate, self.args.pitch, self.args.volume, self.args.style, self.args.style_degree]) or self._has_ssml_tags(text):
             ssml = self._build_ssml(text, voice)
             _LOGGER.debug(f"Using SSML: {ssml}")
             speech_synthesis_result = speech_synthesizer.speak_ssml_async(ssml).get()

@@ -1,9 +1,41 @@
 """Fixtures for tests."""
 
 from types import SimpleNamespace
+from unittest.mock import MagicMock, patch
 import pytest
-from wyoming_microsoft_tts.microsoft_tts import MicrosoftTTS
+
+# Mock azure SDK (not available on all platforms) before importing the module
+import sys
+
+sys.modules["azure"] = MagicMock()
+sys.modules["azure.cognitiveservices"] = MagicMock()
+sys.modules["azure.cognitiveservices.speech"] = MagicMock()
+
+# Patch get_voices in download module to avoid network/voices.json dependency
+voices_fake_data = {
+    "en-US-JennyNeural": {
+        "key": "en-US-JennyNeural",
+        "language": {"code": "en-US"},
+        "name": "Jenny",
+    },
+    "en-GB-SoniaNeural": {
+        "key": "en-GB-SoniaNeural",
+        "language": {"code": "en-GB"},
+        "name": "Sonia",
+    },
+}
+
+
+@pytest.fixture(autouse=True)
+def patch_get_voices():
+    """Patch get_voices to return known voices without network access."""
+    with patch("wyoming_microsoft_tts.microsoft_tts.get_voices", return_value=voices_fake_data):
+        yield
+
+
 import os
+
+from wyoming_microsoft_tts.microsoft_tts import MicrosoftTTS
 
 
 @pytest.fixture
